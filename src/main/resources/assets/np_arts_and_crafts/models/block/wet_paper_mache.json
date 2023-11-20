@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "np_arts_and_crafts:block/wet_paper_mache"
+  }
+}

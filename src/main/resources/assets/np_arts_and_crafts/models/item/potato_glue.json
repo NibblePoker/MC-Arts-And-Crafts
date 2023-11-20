@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+	"layer0": "np_arts_and_crafts:item/potato_glue"
+  }
+}

@@ -9,8 +9,11 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class NeonTubeItem extends Item {
-    public NeonTubeItem(Properties settings) {
-        super(settings);
+    private final Item droppedItem;
+
+    public NeonTubeItem(Item droppedItem, Properties itemProperties) {
+        super(itemProperties);
+        this.droppedItem = droppedItem;
     }
 
     /** Handles hits against entities & breaks the item on the first hit. */
@@ -25,13 +28,13 @@ public class NeonTubeItem extends Item {
             sourceEntity.level().addFreshEntity(new ItemEntity(
                     sourceEntity.level(),
                     sourceEntity.position().x, sourceEntity.position().y, sourceEntity.position().z,
-                    new ItemStack(ArtsAndCraftsMod.BROKEN_NEON_TUBE.get(), 1)
+                    new ItemStack(droppedItem, 1)
             ));
 
             targetEntity.level().addFreshEntity(new ItemEntity(
                     targetEntity.level(),
                     targetEntity.position().x, targetEntity.position().y, targetEntity.position().z,
-                    new ItemStack(ArtsAndCraftsMod.BROKEN_NEON_TUBE.get(), 1)
+                    new ItemStack(droppedItem, 1)
             ));
         }
 

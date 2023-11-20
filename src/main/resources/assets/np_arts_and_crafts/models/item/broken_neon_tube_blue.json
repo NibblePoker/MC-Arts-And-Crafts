@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-	"layer0": "np_arts_and_crafts:item/broken_neon_tube"
+	"layer0": "np_arts_and_crafts:item/broken_neon_tube_blue"
   }
 }

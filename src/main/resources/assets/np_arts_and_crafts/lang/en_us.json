@@ -1,8 +1,14 @@
 {
   "item.np_arts_and_crafts.debug_joystick": "Debugging Joystick",
 
-  "item.np_arts_and_crafts.neon_tube": "Neon Tube",
-  "item.np_arts_and_crafts.broken_neon_tube": "Broken Neon Tube",
+  "item.np_arts_and_crafts.neon_tube_yellow": "Yellow Neon Tube",
+  "item.np_arts_and_crafts.neon_tube_blue": "Blue Neon Tube",
+  "item.np_arts_and_crafts.broken_neon_tube_yellow": "Broken Yellow Neon Tube",
+  "item.np_arts_and_crafts.broken_neon_tube_blue": "Broken Blue Neon Tube",
 
-  "sounds.np_arts_and_crafts.neon_tube_break": "Neon Tube Shattering"
+  "item.np_arts_and_crafts.potato_starch": "Bottle of Potato Starch",
+  "item.np_arts_and_crafts.potato_glue": "Bottle of Potato Glue",
+
+  "sounds.np_arts_and_crafts.neon_tube_break": "Neon Tube Shattering",
+  "sounds.np_arts_and_crafts.glue_slurp": "Glue Slurp"
 }

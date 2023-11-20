@@ -1,0 +1,14 @@
+{
+  "item.np_arts_and_crafts.debug_joystick": "Debugging Joystick",
+
+  "item.np_arts_and_crafts.neon_tube_yellow": "Sun-colored Fluorescent Circularly Extruded Glass",
+  "item.np_arts_and_crafts.neon_tube_blue": "Ocean-colored Fluorescent Circularly Extruded Glass",
+  "item.np_arts_and_crafts.broken_neon_tube_yellow": "Shattered Sun-colored Fluorescent Circularly Extruded Glass",
+  "item.np_arts_and_crafts.broken_neon_tube_blue": "Shattered Ocean-colored Fluorescent Circularly Extruded Glass",
+
+  "item.np_arts_and_crafts.potato_starch": "Glass Vessel of Potato Particulates",
+  "item.np_arts_and_crafts.potato_glue": "Glass Vessel of Concentrated Sticky Potato Juice",
+
+  "sounds.np_arts_and_crafts.neon_tube_break": "Shattering Circularly Extruded Glass",
+  "sounds.np_arts_and_crafts.glue_slurp": "Glue Slurp"
+}

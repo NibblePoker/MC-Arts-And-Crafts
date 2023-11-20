@@ -1,0 +1,14 @@
+{
+  "item.np_arts_and_crafts.debug_joystick": "Joystick de Débogage",
+
+  "item.np_arts_and_crafts.neon_tube_yellow": "Néon jaune",
+  "item.np_arts_and_crafts.neon_tube_blue": "Néon jaune",
+  "item.np_arts_and_crafts.broken_neon_tube_yellow": "Néon bleu cassé",
+  "item.np_arts_and_crafts.broken_neon_tube_blue": "Néon bleu cassé",
+
+  "item.np_arts_and_crafts.potato_starch": "Bouteille d'amidon de patate",
+  "item.np_arts_and_crafts.potato_glue": "Bouteille de colle de patate",
+
+  "sounds.np_arts_and_crafts.neon_tube_break": "Neon Tube Breaking",
+  "sounds.np_arts_and_crafts.glue_slurp": "Glue Slurp"
+}

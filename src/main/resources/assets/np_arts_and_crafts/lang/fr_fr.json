@@ -1,8 +1,14 @@
 {
   "item.np_arts_and_crafts.debug_joystick": "Joystick de Débogage",
 
-  "item.np_arts_and_crafts.neon_tube": "Tube fluorescent",
-  "item.np_arts_and_crafts.broken_neon_tube": "Tube Fluorescent Cassé",
+  "item.np_arts_and_crafts.neon_tube_yellow": "Tube fluorescent jaune",
+  "item.np_arts_and_crafts.neon_tube_blue": "Tube fluorescent jaune",
+  "item.np_arts_and_crafts.broken_neon_tube_yellow": "Tube fluorescent bleu cassé",
+  "item.np_arts_and_crafts.broken_neon_tube_blue": "Tube fluorescent bleu cassé",
 
-  "sounds.np_arts_and_crafts.neon_tube_break": "Neon Tube Breaking"
+  "item.np_arts_and_crafts.potato_starch": "Bouteille d'amidon de pomme de terre",
+  "item.np_arts_and_crafts.potato_glue": "Bouteille de colle de pomme de terre",
+
+  "sounds.np_arts_and_crafts.neon_tube_break": "Neon Tube Breaking",
+  "sounds.np_arts_and_crafts.glue_slurp": "Glue Slurp"
 }
