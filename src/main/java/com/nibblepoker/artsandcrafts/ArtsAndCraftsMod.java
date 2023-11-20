@@ -52,7 +52,7 @@ public class ArtsAndCraftsMod {
     public static final RegistryObject<Block> PAPER_MACHE_BLOCK = BLOCKS.register(
             "paper_mache", () -> new Block(
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY)
-                            .strength(1.0F, 1.5F).sound(SoundType.WOOD).ignitedByLava()
+                            .strength(0.8F).sound(SoundType.WOOD).ignitedByLava()
             )
     );
     public static final RegistryObject<Item> PAPER_MACHE_BLOCK_ITEM = ITEMS.register(

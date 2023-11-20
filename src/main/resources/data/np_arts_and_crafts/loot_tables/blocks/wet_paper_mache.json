@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "np_arts_and_crafts:wet_paper_mache"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "np_arts_and_crafts:blocks/wet_paper_mache"
+}
