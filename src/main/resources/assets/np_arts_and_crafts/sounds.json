@@ -1,0 +1,10 @@
+{
+  "neon_tube_break": {
+    "subtitle": "sounds.np_arts_and_crafts.neon_tube_break",
+    "sounds": [
+      "np_arts_and_crafts:neon_break_1",
+      "np_arts_and_crafts:neon_break_2",
+      "np_arts_and_crafts:neon_break_3"
+    ]
+  }
+}
