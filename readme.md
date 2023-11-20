@@ -1,7 +1,9 @@
-<img src="images/items/neon_tube_long.png" align="right" width="96px" height="96px"/>
+<img src="images/items/neon_tube_yellow.png" align="right" width="96px" height="96px"/>
 
 # NibblePoker's Arts & Crafts
 Small mod that provides bundles with more storage space, and new functionalities in the future.
+
+[Mod's Wiki](https://wiki.minecraft.nibblepoker.lu/arts_and_crafts)
 
 [See on Modrinth](#)<br>
 [See on CurseForge](#)
