@@ -1,4 +1,4 @@
-<img src="images/items/neon_tube_yellow.png" align="right" width="96px" height="96px"/>
+<img src="images/items/designer_tab.png" align="right" width="96px" height="96px"/>
 
 # NibblePoker's Arts & Crafts
 Small mod that provides bundles with more storage space, and new functionalities in the future.
