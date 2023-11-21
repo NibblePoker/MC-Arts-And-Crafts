@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "np_arts_and_crafts:paper_mache_base"
+    },
+    {
+      "tag": "np_arts_and_crafts:paper_mache_base"
+    },
+    {
+      "tag": "np_arts_and_crafts:paper_mache_base"
+    },
+    {
+      "tag": "np_arts_and_crafts:paper_mache_base"
+    },
+    {
+      "tag": "np_arts_and_crafts:paper_mache_base"
+    },
+    {
+      "tag": "np_arts_and_crafts:paper_mache_base"
+    },
+    {
+      "tag": "np_arts_and_crafts:paper_mache_base"
+    },
+    {
+      "tag": "np_arts_and_crafts:paper_mache_base"
+    },
+    {
+      "item": "np_arts_and_crafts:potato_glue"
+    }
+  ],
+  "result": {
+    "item": "np_arts_and_crafts:wet_paper_mache",
+    "count": 1
+  }
+}

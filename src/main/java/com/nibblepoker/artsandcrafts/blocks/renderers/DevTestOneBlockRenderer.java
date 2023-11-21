@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.core.BlockPos;
@@ -37,6 +38,8 @@ public class DevTestOneBlockRenderer implements BlockEntityRenderer<DevTestOneBl
     private final NativeImage nativeImage;
     //private final SimpleTexture simpleTexture;
 
+    private ResourceLocation customImage;
+
     public DevTestOneBlockRenderer(BlockEntityRendererProvider.Context context) {
         this.internalItemStack = new ItemStack(ArtsAndCraftsMod.NEON_TUBE_YELLOW.get());
 
@@ -46,6 +49,10 @@ public class DevTestOneBlockRenderer implements BlockEntityRenderer<DevTestOneBl
         // As Alpha, Green, Blue, Red
         this.nativeImage.fillRect(1, 1, 9, 9, 0xFF7F00FF);
         this.nativeImage.fillRect(6, 6, 9, 9, 0xFF00FF7F);
+
+        this.customImage = Minecraft.getInstance().getTextureManager().register(
+                "np_arts_and_crafts/test_paint", new DynamicTexture(this.nativeImage)
+        );
 
         //this.simpleTexture = SimpleTexture.do(null, this.nativeImage);
         // Test Export
@@ -78,12 +85,22 @@ public class DevTestOneBlockRenderer implements BlockEntityRenderer<DevTestOneBl
                        MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
+        // Allocates A TON of stuff !!!
+        //this.nativeImage.setPixelRGBA(1, 1, this.nativeImage.getPixelRGBA(1, 1) + 1);
+        //this.customImage = Minecraft.getInstance().getTextureManager().register(
+        //        "np_arts_and_crafts/test_paint", new DynamicTexture(this.nativeImage)
+        //);
+
         //ItemStack itemStack = blockEntity.getRenderedItemStack();
 
         //VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.debugQuads());
         //VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entitySolid(this.getTextureLocation()));
-        VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.endPortal());
+        //VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.endPortal());
 
+        //VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.endPortal());
+        VertexConsumer vertexconsumer = bufferSource.getBuffer(RenderType.entitySolid(customImage));
+
+        //vertexconsumer.
         //ArtsAndCraftsMod.LOGGER.info("Rendering: "+this.internalItemStack);
 
         //Matrix4f matrix4f = posestack$pose.pose();
@@ -99,7 +116,7 @@ public class DevTestOneBlockRenderer implements BlockEntityRenderer<DevTestOneBl
         //ArtsAndCraftsMod.LOGGER.info("Normal: "+poseStackPose.normal());
         //ArtsAndCraftsMod.LOGGER.info("Pose: "+poseStackPose.pose());
 
-        int l1 = LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos());
+        int l1 = LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos().above());
 
         poseStack.translate(0.5F, 1.25F, 0.5F);
 

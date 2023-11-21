@@ -4,16 +4,13 @@ import com.mojang.logging.LogUtils;
 import com.nibblepoker.artsandcrafts.blocks.DevTestBlockOne;
 import com.nibblepoker.artsandcrafts.blocks.entities.DevTestOneBlockEntity;
 import com.nibblepoker.artsandcrafts.blocks.renderers.DevTestOneBlockRenderer;
-import com.nibblepoker.artsandcrafts.items.BrokenNeonTubeItem;
-import com.nibblepoker.artsandcrafts.items.DebuggingItem;
-import com.nibblepoker.artsandcrafts.items.GlueItem;
-import com.nibblepoker.artsandcrafts.items.NeonTubeItem;
+import com.nibblepoker.artsandcrafts.items.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,17 +31,25 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
+import java.io.File;
+import java.nio.file.Paths;
+
 @Mod(ArtsAndCraftsMod.MOD_ID)
 public class ArtsAndCraftsMod {
     // Misc Stuff
     public static final String MOD_ID = "np_arts_and_crafts";
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    // Public globals
+    private static boolean dataFolderAvailable = false;
+    private static File dataFolderPath = null;
+
     // Registers
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MOD_ID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
 
     // Blocks
     public static final RegistryObject<Block> WET_PAPER_MACHE_BLOCK = BLOCKS.register(
@@ -119,6 +124,13 @@ public class ArtsAndCraftsMod {
             "potato_glue", () -> new GlueItem(new Item.Properties().stacksTo(1))
     );
 
+    public static final RegistryObject<Item> DESIGNER_TAB_ITEM = ITEMS.register(
+            "designer_tab", () -> new DesignerTabItem(new Item.Properties().stacksTo(1))
+    );
+    public static final RegistryObject<Item> DESIGNER_BLUEPRINT_ITEM = ITEMS.register(
+            "designer_blueprint", () -> new DesignerTabItem(new Item.Properties().stacksTo(1))
+    );
+
     // Sounds
     public static final RegistryObject<SoundEvent> NEON_BREAKING_SOUND = SOUNDS.register(
             "neon_tube_break", () -> SoundEvent.createVariableRangeEvent(
@@ -140,9 +152,47 @@ public class ArtsAndCraftsMod {
             ).build(null)
     );
 
+    // Creative tabs
+    public static final RegistryObject<CreativeModeTab> CREATIVE_TAB = CREATIVE_TABS.register(
+            "main_tab", () -> CreativeModeTab.builder()
+                    .icon(() -> new ItemStack(DESIGNER_TAB_ITEM.get()))
+                    .title(Component.translatable("creative_tab."+MOD_ID+".main_tab"))
+                    .displayItems((itemDisplayParameters, outputTab) -> {
+                        ITEMS.getEntries().forEach(itemRegistryObject -> {
+                            outputTab.accept(((RegistryObject<Item>) itemRegistryObject).get());
+                        });
+                    }).build()
+    );
+
     // Mod's code
     public ArtsAndCraftsMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        // Preparing the data directory in "NibblePokerData/np_arts_and_crafts".
+        LOGGER.info("Preparing the data folders...");
+        ArtsAndCraftsMod.dataFolderPath = Paths.get(Minecraft.getInstance().gameDirectory.getAbsolutePath(),
+                "NibblePokerData", MOD_ID).toFile();
+
+        // Checking if we need to create the directory tree.
+        if(!ArtsAndCraftsMod.dataFolderPath.exists()) {
+            try {
+                LOGGER.info("Attempting to create the data directories...");
+                ArtsAndCraftsMod.dataFolderPath.mkdirs();
+            } catch (Exception e) {
+                LOGGER.error("Unable to create data directory !");
+                LOGGER.error(e.getMessage());
+            }
+        }
+
+        // Checking if we actually have a data directory and not some file with the same name.
+        if(ArtsAndCraftsMod.dataFolderPath.exists()) {
+            if(ArtsAndCraftsMod.dataFolderPath.isDirectory()) {
+                LOGGER.debug("The data directory is available :)");
+                ArtsAndCraftsMod.dataFolderAvailable = true;
+            } else {
+                LOGGER.error("The data directory is a file !");
+            }
+        }
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
@@ -152,6 +202,7 @@ public class ArtsAndCraftsMod {
         ITEMS.register(modEventBus);
         SOUNDS.register(modEventBus);
         BLOCK_ENTITY_TYPES.register(modEventBus);
+        CREATIVE_TABS.register(modEventBus);
 
         //MenuIndex.registerMenus(modEventBus);
 

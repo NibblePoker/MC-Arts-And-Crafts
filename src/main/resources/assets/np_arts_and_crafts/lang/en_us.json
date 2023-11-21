@@ -12,6 +12,33 @@
   "item.np_arts_and_crafts.potato_starch": "Bottle of Potato Starch",
   "item.np_arts_and_crafts.potato_glue": "Bottle of Potato Glue",
 
+  "item.np_arts_and_crafts.designer_blueprint": "designer_blueprint",
+  "item.np_arts_and_crafts.designer_tab": "designer_tab",
+
   "sounds.np_arts_and_crafts.neon_tube_break": "Neon Tube Shattering",
-  "sounds.np_arts_and_crafts.glue_slurp": "Glue Slurp"
+  "sounds.np_arts_and_crafts.glue_slurp": "Glue Slurp",
+
+  "creative_tab.np_arts_and_crafts.main_tab": "???",
+
+  "text.np_arts_and_crafts.anomalous_trichromacy": "Anomalous Trichromacy",
+  "text.np_arts_and_crafts.red_weak.name": "Red-Weak",
+  "text.np_arts_and_crafts.red_weak.medical": "Protanomaly",
+  "text.np_arts_and_crafts.green_weak.name": "Green-Weak",
+  "text.np_arts_and_crafts.green_weak.medical": "Deuteranomaly",
+  "text.np_arts_and_crafts.blue_weak.name": "Blue-Weak",
+  "text.np_arts_and_crafts.blue_weak.medical": "Tritanomaly",
+
+  "text.np_arts_and_crafts.dichromatic_view": "Dichromatic View",
+  "text.np_arts_and_crafts.red_blind.name": "Red-Blind",
+  "text.np_arts_and_crafts.red_blind.medical": "Protanopia",
+  "text.np_arts_and_crafts.green_blind.name": "Green-Blind",
+  "text.np_arts_and_crafts.green_blind.medical": "Deuteranopia",
+  "text.np_arts_and_crafts.blue_blind.name": "Blue-Blind",
+  "text.np_arts_and_crafts.blue_blind.medical": "Tritanopia",
+
+  "text.np_arts_and_crafts.monochromatic_view": "Monochromatic view",
+  "text.np_arts_and_crafts.monochrome.name": "Monochromacy",
+  "text.np_arts_and_crafts.monochrome.medical": "Achromatopsia",
+  "text.np_arts_and_crafts.blue_monochrome.name": "Blue Cone Monochromacy",
+  "text.np_arts_and_crafts.blue_monochrome.medical": "BCM"
 }
