@@ -1,10 +1,14 @@
 package com.nibblepoker.artsandcrafts;
 
 import com.mojang.logging.LogUtils;
+import com.nibblepoker.artsandcrafts.blocks.DevTestBlockOne;
+import com.nibblepoker.artsandcrafts.blocks.entities.DevTestOneBlockEntity;
+import com.nibblepoker.artsandcrafts.blocks.renderers.DevTestOneBlockRenderer;
 import com.nibblepoker.artsandcrafts.items.BrokenNeonTubeItem;
 import com.nibblepoker.artsandcrafts.items.DebuggingItem;
 import com.nibblepoker.artsandcrafts.items.GlueItem;
 import com.nibblepoker.artsandcrafts.items.NeonTubeItem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.BlockItem;
@@ -12,12 +16,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -35,6 +44,7 @@ public class ArtsAndCraftsMod {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MOD_ID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MOD_ID);
 
     // Blocks
     public static final RegistryObject<Block> WET_PAPER_MACHE_BLOCK = BLOCKS.register(
@@ -58,6 +68,18 @@ public class ArtsAndCraftsMod {
     public static final RegistryObject<Item> PAPER_MACHE_BLOCK_ITEM = ITEMS.register(
             "paper_mache", () -> new BlockItem(
                     PAPER_MACHE_BLOCK.get(), new Item.Properties()
+            )
+    );
+
+    public static final RegistryObject<Block> DEV_TEST_1_BLOCK = BLOCKS.register(
+            "dev_test_block_1", () -> new DevTestBlockOne(
+                    BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PINK)
+                            .strength(0.0F).sound(SoundType.STONE)
+            )
+    );
+    public static final RegistryObject<Item> DEV_TEST_1_ITEM = ITEMS.register(
+            "dev_test_block_1", () -> new BlockItem(
+                    DEV_TEST_1_BLOCK.get(), new Item.Properties()
             )
     );
 
@@ -109,6 +131,15 @@ public class ArtsAndCraftsMod {
             )
     );
 
+    // Block entities
+    public static final RegistryObject<BlockEntityType<DevTestOneBlockEntity>> DEV_TEST_1_BLOCK_ENTITY_TYPE = BLOCK_ENTITY_TYPES.register(
+            "be_test_zero",
+            () -> BlockEntityType.Builder.of(
+                    DevTestOneBlockEntity::new,
+                    DEV_TEST_1_BLOCK.get()
+            ).build(null)
+    );
+
     // Mod's code
     public ArtsAndCraftsMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -116,17 +147,16 @@ public class ArtsAndCraftsMod {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-        //BlockIndex.register(modEventBus);
-
         // Register the Deferred Register instances to the mod event bus.
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         SOUNDS.register(modEventBus);
+        BLOCK_ENTITY_TYPES.register(modEventBus);
 
         //MenuIndex.registerMenus(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
-        //MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(this);
 
         // Register the item to a creative tab
         //modEventBus.addListener(this::addCreative);
@@ -142,5 +172,24 @@ public class ArtsAndCraftsMod {
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+    }
+
+    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
+    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    public static class ClientModEvents {
+        @SubscribeEvent
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            // Some client setup code
+            LOGGER.info("HELLO FROM CLIENT SETUP");
+            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+            //ItemBlockRenderTypes.setRenderLayer(WALL_VENDING_TEST_BLOCK, RenderType.CompositeState);
+        }
+
+        @SubscribeEvent
+        public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+            LOGGER.info("Registering renderers...");
+            event.registerBlockEntityRenderer(DEV_TEST_1_BLOCK_ENTITY_TYPE.get(),
+                    DevTestOneBlockRenderer::new);
+        }
     }
 }
