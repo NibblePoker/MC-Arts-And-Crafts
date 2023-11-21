@@ -8,14 +8,33 @@ Small mod that provides bundles with more storage space, and new functionalities
 [See on Modrinth](#)<br>
 [See on CurseForge](#)
 
+## Features
+This list is a placeholder !
 
-## Current features
-TODO
-
+* Color-blind friendliness tools
+  * Simulate different effects when drawing
+* Neon Tubes
+  * [Designer]
+  * Fight with them
+* Small interactions
+  * Glue can be drunk
+  * Neon Tubes can be used as tactical weapons
 
 ## Mechanics
-TODO
+For detailed information, visit the [Mod's Wiki](https://wiki.minecraft.nibblepoker.lu/arts_and_crafts).
 
+### Neon Tubes
+The *Neon Tubes* are crafting material that can be used in combat.
+
+When an opponent is smacked with one, the tube will break and release a small short-lived poison cloud on your target.<br>
+But be carefull, after doing so, both of you will be able to pickup a sharp *Broken Neon Tube* piece that can be used
+as an impromptu knife.
+
+### Potato Glue
+???
+
+If you're ever feeling nostalgic for your preschool days, you can even drink it.<br>
+However you have to be careful since that glue is a bit toxic.
 
 ## Source code
 
@@ -27,6 +46,9 @@ Not supported !
 
 
 ## Attributions
+
+### TODO
+https://github.com/MaPePeR/jsColorblindSimulator
 
 ### Nakhas
 [**Neon bulb breaking on the ground.wav**](https://freesound.org/people/Nakhas/sounds/360410/) - 
