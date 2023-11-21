@@ -5,8 +5,8 @@ Small mod that provides bundles with more storage space, and new functionalities
 
 [Mod's Wiki](https://wiki.minecraft.nibblepoker.lu/arts_and_crafts)
 
-[See on Modrinth](#)<br>
-[See on CurseForge](#)
+[See on Modrinth](#) (TODO)<br>
+[See on CurseForge](#) (TODO)
 
 ## Features
 This list is a placeholder !
@@ -16,25 +16,25 @@ This list is a placeholder !
 * Neon Tubes
   * [Designer]
   * Fight with them
-* Small interactions
+* Small & funny interactions
   * Glue can be drunk
   * Neon Tubes can be used as tactical weapons
+  * Road signs thieving mechanics
 
 ## Mechanics
 For detailed information, visit the [Mod's Wiki](https://wiki.minecraft.nibblepoker.lu/arts_and_crafts).
 
-### Neon Tubes
-The *Neon Tubes* are crafting material that can be used in combat.
 
-When an opponent is smacked with one, the tube will break and release a small short-lived poison cloud on your target.<br>
-But be carefull, after doing so, both of you will be able to pickup a sharp *Broken Neon Tube* piece that can be used
+<img src="images/items/neon_tube_yellow.png" align="right" width="48px" height="48px"/>
+<img src="images/items/neon_tube_blue.png" align="right" width="48px" height="48px"/>
+
+### Neon Tubes&nbsp;&nbsp;<sup><sub>[Wiki](https://wiki.minecraft.nibblepoker.lu/arts_and_crafts/neon_tubes)</sub></sup>
+
+The *Neon Tubes* are a crafting material that can be also used in combat.
+
+When a foe is smacked with one of these, the tube will break and release a small short-lived poison cloud around your target.<br>
+But be carefull, after doing so, both of you will be able to pickup a sharp and fragile *Broken Neon Tube* piece that can be used
 as an impromptu knife.
-
-### Potato Glue
-???
-
-If you're ever feeling nostalgic for your preschool days, you can even drink it.<br>
-However you have to be careful since that glue is a bit toxic.
 
 ## Source code
 
