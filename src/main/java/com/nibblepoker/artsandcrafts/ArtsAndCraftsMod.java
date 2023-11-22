@@ -5,6 +5,7 @@ import com.nibblepoker.artsandcrafts.blocks.DevTestBlockOne;
 import com.nibblepoker.artsandcrafts.blocks.entities.DevTestOneBlockEntity;
 import com.nibblepoker.artsandcrafts.blocks.renderers.DevTestOneBlockRenderer;
 import com.nibblepoker.artsandcrafts.items.*;
+import com.nibblepoker.artsandcrafts.logic.managers.ArtManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -41,8 +42,9 @@ public class ArtsAndCraftsMod {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     // Public globals
-    private static boolean dataFolderAvailable = false;
-    private static File dataFolderPath = null;
+    public static boolean dataFolderAvailable = false;
+    public static File dataFolderPath = null;
+    public static ArtManager artManager = new ArtManager();
 
     // Registers
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
@@ -194,7 +196,12 @@ public class ArtsAndCraftsMod {
             }
         }
 
-        // Register the commonSetup method for modloading
+        // Preparing the ArtManager.
+        LOGGER.info("Preparing the ArtManager...");
+        ArtsAndCraftsMod.artManager.init(ArtsAndCraftsMod.dataFolderPath);
+
+        // Register the commonSetup method for mod
+        LOGGER.info("Doing modEventBus stuff...");
         modEventBus.addListener(this::commonSetup);
 
         // Register the Deferred Register instances to the mod event bus.
@@ -224,6 +231,7 @@ public class ArtsAndCraftsMod {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
     }
+
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
