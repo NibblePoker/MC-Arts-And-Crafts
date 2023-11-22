@@ -57,7 +57,7 @@ to get a thorough overview of these tools.
 Every piece of art drawn by players is stored in a [NBT file](https://minecraft.wiki/w/NBT_format)
 in the `NibblePokerData/np_arts_and_crafts/` folder of your installation for both the server and the client.
 
-Everytime a player loads a block with a piece of art, it will ask the server can send a copy of it.<br>
+Everytime a player loads a block with a piece of art, it will ask the server to send a copy of it.<br>
 If it can, the server sends it and the client keeps a copy to make subsequent loadings faster.
 
 However, during that process, the server can notify the client that the art piece has been banned and shouldn't
