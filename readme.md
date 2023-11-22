@@ -1,7 +1,8 @@
 <img src="images/items/designer_tab.png" align="right" width="96px" height="96px"/>
 
 # NibblePoker's Arts & Crafts
-Small mod that provides bundles with more storage space, and new functionalities in the future.
+Minecraft mod that provides you with the ability to customise a variety of blocks and signs for
+all your building, decoration & role-play needs.
 
 [Mod's Wiki](https://wiki.minecraft.nibblepoker.lu/arts_and_crafts)
 
@@ -9,12 +10,21 @@ Small mod that provides bundles with more storage space, and new functionalities
 [See on CurseForge](#) (TODO)
 
 ## Features
-This list is a placeholder !
 
+* Ability to draw custom images
+  * Wooden signs 
+  * Neon lights
+  * ???
 * Color-blind friendliness tools
   * Simulate different effects when drawing
+* Moderation tools
+  * **Entirely optional, it's just nice to have**
+  * Server-side authorship attribution for each drawing
+  * Ability for OPs to consult all drawings known to server
+  * Ability to block/ban certain drawings after application
+  * <s>Drawing usage logging</s> (Might come later)
 * Neon Tubes
-  * [Designer]
+  * Animated signs
   * Fight with them
 * Small & funny interactions
   * Glue can be drunk
@@ -36,13 +46,41 @@ When a foe is smacked with one of these, the tube will break and release a small
 But be carefull, after doing so, both of you will be able to pickup a sharp and fragile *Broken Neon Tube* piece that can be used
 as an impromptu knife.
 
+### Moderation &nbsp;&nbsp;<sup><sub>[Wiki](https://wiki.minecraft.nibblepoker.lu/arts_and_crafts/moderation)</sub></sup>
+This mod provides parents and server owners with a couple of in-game and out-of-game tools that can be used to
+overview, manage and moderate the user-created content originating from this mod.
+
+We also **strongly** recommend you read our [Wiki page](https://wiki.minecraft.nibblepoker.lu/arts_and_crafts/moderation)
+to get a thorough overview of these tools.
+
+#### How is art stored & handled ?
+Every piece of art drawn by players is stored in a [NBT file](https://minecraft.wiki/w/NBT_format)
+in the `NibblePokerData/np_arts_and_crafts/` folder of your installation for both the server and the client.
+
+Everytime a player loads a block with a piece of art, it will ask the server can send a copy of it.<br>
+If it can, the server sends it and the client keeps a copy to make subsequent loadings faster.
+
+However, during that process, the server can notify the client that the art piece has been banned and shouldn't
+be displayed.<br>
+This allows parents and server owners to block art pieces in a quick and easy way.
+
+*More ways to monitor and force refresh images will be implemented later.*
+
+#### In-game art browser
+[TODO: Add quick overview]
+
+#### Art banning
+Pieces of art can be banned and unbanned at will by a server operator in-game, or by changing the `banned` NBT
+field in a `.art.nbt` file to `0` or `1` and restarting the server.
+
+
 ## Source code
 
 ### Forge
 * [1.20.1](https://github.com/NibblePoker/MC-Arts-And-Crafts/tree/1.20.1-forge) - `1.20.1-forge` branch
 
 ### Fabric
-Not supported !
+Not supported, **might** come later once everything is in place.
 
 
 ## Attributions
@@ -53,23 +91,16 @@ https://github.com/MaPePeR/jsColorblindSimulator
 ### Nakhas
 [**Neon bulb breaking on the ground.wav**](https://freesound.org/people/Nakhas/sounds/360410/) - 
 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.en)<br>
-●&nbsp;&nbsp;`neon_break_1.ogg`, `neon_break_2.ogg`, `neon_break_3.ogg`, `neon_drop.ogg`
-
 [**Slurp sounds**](https://freesound.org/people/Nakhas/sounds/569259/) - 
 [CC0](https://creativecommons.org/public-domain/cc0/)<br>
-●&nbsp;&nbsp;`glue_slurp_1.ogg`
-
 [**Wooshes.wav**](https://freesound.org/people/Nakhas/sounds/328554/) - 
-[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.en)<br>
-●&nbsp;&nbsp;`neon_swing_1.ogg`, `neon_swing_2.ogg`, `neon_swing_3.ogg`, `neon_swing_4.ogg`
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.en)
 
-See on [freesound.org](https://freesound.org/people/Nakhas/)<br>
-See [their website](http://nicolas-martigne.info/)
+See on [freesound.org](https://freesound.org/people/Nakhas/) or on their [their website](http://nicolas-martigne.info/).
 
 ### keng-wai-chane-chick-te
 [**LIGHT_NEON_DYSFUNCTION.wav**](https://freesound.org/people/keng-wai-chane-chick-te/sounds/422220/) - 
-[CC0](https://creativecommons.org/public-domain/cc0/)<br>
-●&nbsp;&nbsp;`neon_buzz_fail_loop.ogg`
+[CC0](https://creativecommons.org/public-domain/cc0/)
 
 See on [freesound.org](https://freesound.org/people/keng-wai-chane-chick-te/)
 
