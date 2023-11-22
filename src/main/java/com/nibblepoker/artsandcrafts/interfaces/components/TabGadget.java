@@ -57,7 +57,7 @@ public class TabGadget implements IGadget {
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics graphics, float partialTick, int mouseX, int mouseY, int parentOriginX, int parentOriginY) {
+	public void render(GuiGraphics graphics, float partialTick, int mouseX, int mouseY, int parentOriginX, int parentOriginY) {
 		this.renderManualBackground(graphics,
 				parentOriginX + this.tabOffsetX, parentOriginY + this.tabOffsetY,
 				this.tabWidth, this.tabHeight);

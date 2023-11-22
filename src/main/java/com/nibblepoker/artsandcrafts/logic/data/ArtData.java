@@ -1,19 +1,14 @@
 package com.nibblepoker.artsandcrafts.logic.data;
 
 import com.nibblepoker.artsandcrafts.ArtsAndCraftsMod;
-
 import com.nibblepoker.artsandcrafts.exceptions.InvalidArtDataException;
-import io.netty.buffer.Unpooled;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.network.FriendlyByteBuf;
 
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.CompoundTag;
-import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;

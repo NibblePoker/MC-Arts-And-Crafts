@@ -3,6 +3,7 @@ package com.nibblepoker.artsandcrafts.logic.managers;
 import com.mojang.logging.LogUtils;
 import com.nibblepoker.artsandcrafts.logic.data.ArtData;
 import com.nibblepoker.artsandcrafts.logic.data.EArtFormat;
+
 import org.slf4j.Logger;
 
 import java.io.File;
