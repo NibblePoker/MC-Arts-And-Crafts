@@ -2,12 +2,15 @@ package com.nibblepoker.artsandcrafts.logic.managers;
 
 import com.mojang.logging.LogUtils;
 import com.nibblepoker.artsandcrafts.logic.data.ArtData;
+import com.nibblepoker.artsandcrafts.logic.data.EArtFormat;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The <i>ArtManager</i> is a caching solution that sits between the locally saved art pieces/presets and the
@@ -17,21 +20,32 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author Herwin Bozet (NibblePoker)
  */
 public class ArtManager {
+    private static final int DEFAULT_LOCK_TIMEOUT_MS = 100;
+
     private final ConcurrentHashMap<String, ArtData> artIndex;
     private final ConcurrentLinkedQueue<ArtData> unsavedArtData;
     private boolean isInitialized;
     private Thread internalThread = null;
 
+    /**
+     * Overly-strict lock used when either the game or internal thread needs to access some of the art's NBT data.
+     * This should help prevent crashes when one side is saving the NBT data, and the other is querying/modifying it.
+     * The client should wait at most 100ms and give up if the lock isn't released.
+     * The internal thread should wait at minimum 200ms if the lock is used by the client.
+     */
+    private final ReentrantLock artNbtlock;
+
     public ArtManager() {
         this.isInitialized = false;
         this.artIndex = new ConcurrentHashMap<>();
         this.unsavedArtData = new ConcurrentLinkedQueue<>();
+        this.artNbtlock = new ReentrantLock();
     }
 
     public void init(File artDataFolder) {
         this.internalThread = new Thread(new ArtManagerThread(this, artDataFolder));
-        internalThread.setName("NibblePoker's ArtManager");
-        internalThread.start();
+        this.internalThread.setName("NibblePoker's ArtManager");
+        this.internalThread.start();
 
         this.isInitialized = true;
     }
@@ -40,7 +54,63 @@ public class ArtManager {
         this.artIndex.clear();
         this.unsavedArtData.clear();
 
+        // Stopping the thread.
+        if(this.internalThread.isAlive()) {
+            this.internalThread.interrupt();
+        }
+        // We now assume it is stopped.
+
         this.isInitialized = false;
+    }
+
+    public byte[] getImageData(String imageHash) {
+        ArtData desiredArt = this.artIndex.get(imageHash);
+
+        // If we have the data, we attempt to acquire the lock and extract the required info.
+        if(desiredArt != null) {
+            try {
+                if(this.artNbtlock.tryLock(DEFAULT_LOCK_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                    // Making a complete copy to avoid getting a "ConcurrentModificationException".
+                    byte[] imageByteData = desiredArt.getImageData();
+                    byte[] copiedByteData = new byte[imageByteData.length];
+                    System.arraycopy(imageByteData, 0, copiedByteData, 0, imageByteData.length);
+
+                    // Lock gets freed in "finally" block.
+                    return copiedByteData;
+                }
+            } catch (InterruptedException ignored) {
+                // We don't really care about lock failures TBH.
+            } finally {
+                this.artNbtlock.unlock();
+            }
+        }
+
+        // In the event we couldn't get the image data, we return null.
+        return null;
+    }
+
+    public EArtFormat getImageFormat(String imageHash) {
+        ArtData desiredArt = this.artIndex.get(imageHash);
+
+        // If we have the data, we attempt to acquire the lock and extract the required info.
+        if(desiredArt != null) {
+            try {
+                if(this.artNbtlock.tryLock(DEFAULT_LOCK_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                    // Lock gets freed in "finally" block.
+                    return EArtFormat.getFromCode(desiredArt.getImageFormat());
+                }
+            } catch (InterruptedException ignored) {
+                // We don't really care about lock failures TBH.
+            } finally {
+                this.artNbtlock.unlock();
+            }
+
+            // In the event we couldn't get the lock, we indicate that it's loading and should be retried later.
+            return EArtFormat.LOADING;
+        }
+
+        // We don't have that image cached.
+        return EArtFormat.UNKNOWN_UNCACHED;
     }
 
     public boolean isRunning() {
@@ -63,13 +133,27 @@ public class ArtManager {
             this.logger.info("The 'ArtManagerThread' Runnable has started !");
 
             // Getting a list of all cached ".art" files...
+            this.artManager.artNbtlock.lock();
             this.loadCachedArt();
+            this.artManager.artNbtlock.unlock();
 
             while(true) {
                 if(!this.artManager.unsavedArtData.isEmpty()) {
                     // Saving an art piece that was in the list.
                     ArtData artDataToSave = this.artManager.unsavedArtData.poll();
-                    artDataToSave.save();
+                    try {
+                        if(this.artManager.artNbtlock.tryLock(DEFAULT_LOCK_TIMEOUT_MS * 5, TimeUnit.MILLISECONDS)) {
+                            // Lock gets freed in "finally" block.
+                            artDataToSave.save();
+                        } else {
+                            // We couldn't get the lock, we requeue the art for saving.
+                            this.artManager.unsavedArtData.add(artDataToSave);
+                        }
+                    } catch (InterruptedException ignored) {
+                        // We don't care about other failures.
+                    } finally {
+                        this.artManager.artNbtlock.unlock();
+                    }
                 } else {
                     // Waiting for a bit to prevent CPU hogging.
                     try {
@@ -83,16 +167,21 @@ public class ArtManager {
          * Lists and loads all cached ".art.nbt" files present in "NibblePokerData/np_arts_and_crafts/".
          */
         private void loadCachedArt() {
+            int artLoadCount = 0;
+
             this.logger.info("Queuing cached '.art.nbt' files...");
-            for (String item : Objects.requireNonNull(this.artDataFolder.list((dir, name) -> name.endsWith(".art.nbt")))) {
+            for(String item : Objects.requireNonNull(this.artDataFolder.list((dir, name) -> name.endsWith(".art.nbt")))) {
                 this.logger.debug("Loading '" + item + "'...");
                 try {
                     ArtData artItem = ArtData.fromFile(new File(this.artDataFolder, item));
                     if(artItem != null) {
                         this.artManager.artIndex.put(artItem.getSha1String(), artItem);
+                        artLoadCount++;
                     }
                 } catch (Exception ignored) {}
             }
+            this.logger.info("Loaded '" + artLoadCount + "' piece(s) of art !");
+            this.logger.info("Cached '" + this.artManager.artIndex.size() + "' unique piece(s) of art !");
         }
     }
 }

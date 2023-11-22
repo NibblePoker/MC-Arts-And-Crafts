@@ -8,7 +8,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 
 import net.minecraft.nbt.CompoundTag;
-import org.jetbrains.annotations.NotNull;
+import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class ArtData {
     private static final int MAGIC_NUMBER = 0x4E508EDF;
     private static final short VERSION_NUMBER = 0x0001;
 
-    private CompoundTag artNbtData;
+    private final CompoundTag artNbtData;
 
     public ArtData(CompoundTag artNbtData) throws InvalidArtDataException {
         this.artNbtData = artNbtData;
@@ -57,6 +57,9 @@ public class ArtData {
         if(!this.artNbtData.contains("art", CompoundTag.TAG_BYTE_ARRAY)) {
             throw new InvalidArtDataException("Unable to find the 'art' byte array field !");
         }
+        if(!this.artNbtData.contains("format", CompoundTag.TAG_INT)) {
+            throw new InvalidArtDataException("Unable to find the 'format' int field !");
+        }
 
         // Checking if we need to update the file itself.
         if(wasUpgraded) {
@@ -64,6 +67,14 @@ public class ArtData {
         }
 
         System.out.println(this.artNbtData.getString("name"));
+    }
+
+    public byte[] getImageData() {
+        return this.artNbtData.getByteArray("art");
+    }
+
+    public int getImageFormat() {
+        return this.artNbtData.getInt("format");
     }
 
     public UUID getAuthorUUID() {
@@ -114,22 +125,9 @@ public class ArtData {
         return true;
     }
 
-    public static ArtData fromBytes(byte[] rawArtData) throws InvalidArtDataException {
-        // FIXME: Use NbtIo instead !
-        FriendlyByteBuf rawArtDataBuffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(rawArtData));
-        try {
-            return new ArtData(rawArtDataBuffer.readAnySizeNbt());
-        } catch(Exception e) {
-            // The "readAnySizeNbt" function has undeclared exceptions.
-            // I can't be bothered to walk the entire chain to find all of them...
-            throw new InvalidArtDataException("Unable to read NBT data !");
-        }
-    }
-
     public static ArtData fromFile(File artFile) {
-        // FIXME: Use NbtIo instead !
         try {
-            return ArtData.fromBytes(Files.readAllBytes(artFile.toPath()));
+            return new ArtData(NbtIo.read(artFile));
         } catch(Exception e) {
             System.out.println(e.toString());
             return null;
