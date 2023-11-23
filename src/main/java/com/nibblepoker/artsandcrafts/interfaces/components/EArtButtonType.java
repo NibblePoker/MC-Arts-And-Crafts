@@ -6,7 +6,15 @@ public enum EArtButtonType {
     LEFT_MEDIUM(10, 14, 0, 32),
     RIGHT_MEDIUM(10, 14, 10, 32),
     RIGHT_LARGE(20, 20, 48, 0),
-    LEFT_LARGE(20, 20, 68, 0);
+    LEFT_LARGE(20, 20, 68, 0),
+    EDITOR_PLUS(12, 13, 0, 80),
+    EDITOR_MINUS(12, 13, 12, 80),
+    EDITOR_OPACITY_MINUS(12, 13, 24, 80),
+    EDITOR_OPACITY_PLUS(12, 13, 36, 80),
+    EDITOR_TOOL_PENCIL(14, 15, 0, 128),
+    EDITOR_TOOL_ERASER(14, 15, 14, 128),
+    EDITOR_TOOL_PICKER(14, 15, 28, 128),
+    EDITOR_TOOL_BUCKET(14, 15, 42, 128);
 
     public final int width;
     public final int height;

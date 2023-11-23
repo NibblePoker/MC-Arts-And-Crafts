@@ -20,6 +20,10 @@
 
   "creative_tab.np_arts_and_crafts.main_tab": "???",
 
+  "text.np_arts_and_crafts.designer_tab.title.main": "Designer's Tab",
+  "text.np_arts_and_crafts.designer_tab.title.create": "Create new art",
+  "text.np_arts_and_crafts.designer_tab.title.editor": "Image editor",
+
   "text.np_arts_and_crafts.anomalous_trichromacy": "Anomalous Trichromacy",
   "text.np_arts_and_crafts.red_weak.name": "Red-Weak",
   "text.np_arts_and_crafts.red_weak.medical": "Protanomaly",

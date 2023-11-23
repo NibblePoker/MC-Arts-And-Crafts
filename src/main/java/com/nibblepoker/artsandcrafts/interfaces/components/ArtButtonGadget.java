@@ -16,6 +16,7 @@ public class ArtButtonGadget implements IGadget {
     public int posOffsetX, posOffsetY;
     public int width, height;
     private final int textureOriginX, textureOriginY;
+    public boolean isDisabled;
 
     public ArtButtonGadget(EArtButtonType buttonType, int posOffsetX, int posOffsetY) {
         this(posOffsetX, posOffsetY, buttonType.width, buttonType.height, buttonType.textureOriginX, buttonType.textureOriginY);
@@ -28,6 +29,7 @@ public class ArtButtonGadget implements IGadget {
         this.height = height;
         this.textureOriginX = textureOriginX;
         this.textureOriginY = textureOriginY;
+        this.isDisabled = false;
     }
 
     @Override
@@ -35,11 +37,15 @@ public class ArtButtonGadget implements IGadget {
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
+
+        int textureOffsetY = this.height * ((this.isDisabled ? 2 : (
+                this.isMouseOver(mouseX, mouseY, parentOriginX, parentOriginY) ? 1 : 0
+        )));
+
         graphics.blit(BUTTONS_TEXTURE,
                 parentOriginX + this.posOffsetX, parentOriginY + this.posOffsetY,
                 this.width, this.height,
-                this.textureOriginX, this.textureOriginY + (
-                        this.isMouseOver(mouseX, mouseY, parentOriginX, parentOriginY) ? this.height : 0),
+                this.textureOriginX, this.textureOriginY + textureOffsetY,
                 this.width, this.height,
                 256, 256);
     }

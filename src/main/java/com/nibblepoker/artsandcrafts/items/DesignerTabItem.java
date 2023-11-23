@@ -28,7 +28,7 @@ public class DesignerTabItem extends Item {
         // TODO: Showing the client-side GUI for ???
         if(world.isClientSide()) {
             ArtsAndCraftsMod.LOGGER.debug("Showing Designer Tab's Screen...");
-            Minecraft.getInstance().setScreen(new DesignerTabScreen(Component.translatable("123")));
+            Minecraft.getInstance().setScreen(new DesignerTabScreen());
         }
 
         return InteractionResultHolder.fail(user.getItemInHand(hand));
