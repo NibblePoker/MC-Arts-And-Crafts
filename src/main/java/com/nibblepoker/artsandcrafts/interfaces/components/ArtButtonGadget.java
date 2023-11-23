@@ -58,14 +58,14 @@ public class ArtButtonGadget implements IGadget {
 
     @Override
     public boolean onMouseClicked(int normalizedX, int normalizedY, int mouseButton, ItemStack currentlyCarriedItemStack) {
-        if(this.isMouseOver(normalizedX, normalizedY)) {
+        if(this.isMouseOver(normalizedX, normalizedY) && !this.isDisabled) {
             this.playClickSound();
             return true;
         }
         return false;
     }
 
-    protected void playClickSound() {
+    public void playClickSound() {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 }

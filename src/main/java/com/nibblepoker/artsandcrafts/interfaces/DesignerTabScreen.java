@@ -72,6 +72,7 @@ public class DesignerTabScreen extends Screen {
     @Override
     public void tick() {
         this.testButton.tick();
+
         super.tick();
     }
 

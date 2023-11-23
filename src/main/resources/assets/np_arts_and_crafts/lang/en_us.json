@@ -24,6 +24,12 @@
   "text.np_arts_and_crafts.designer_tab.title.create": "Create new art",
   "text.np_arts_and_crafts.designer_tab.title.editor": "Image editor",
 
+  "text.np_arts_and_crafts.designer_tab.editor.tools": "Tools:",
+  "text.np_arts_and_crafts.designer_tab.editor.colors": "Colors:",
+  "text.np_arts_and_crafts.designer_tab.editor.options": "Options:",
+  "text.np_arts_and_crafts.designer_tab.editor.options.frame_masks": "Frame masks",
+  "text.np_arts_and_crafts.designer_tab.editor.options.color_blindness": "Color blind.",
+
   "text.np_arts_and_crafts.anomalous_trichromacy": "Anomalous Trichromacy",
   "text.np_arts_and_crafts.red_weak.name": "Red-Weak",
   "text.np_arts_and_crafts.red_weak.medical": "Protanomaly",
