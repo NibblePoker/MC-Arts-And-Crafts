@@ -1,5 +1,8 @@
 package com.nibblepoker.artsandcrafts.interfaces.components;
 
+/**
+ * @version 1.0.0
+ */
 public enum EArtButtonType {
     UP_SMALL(10, 10, 0, 0),
     DOWN_SMALL(10, 10, 10, 0),

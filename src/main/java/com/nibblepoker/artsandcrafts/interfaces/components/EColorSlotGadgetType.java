@@ -1,5 +1,8 @@
 package com.nibblepoker.artsandcrafts.interfaces.components;
 
+/**
+ * @version 1.0.0
+ */
 public enum EColorSlotGadgetType {
     LARGE(18, 18),
     SMALL(13, 13);

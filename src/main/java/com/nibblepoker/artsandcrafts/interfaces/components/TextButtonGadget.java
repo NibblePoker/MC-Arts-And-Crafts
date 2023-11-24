@@ -9,83 +9,69 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ItemStack;
 
-public class TextButtonGadget implements IGadget {
+public class TextButtonGadget extends NPGadget {
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(
             ArtsAndCraftsMod.MOD_ID,"textures/gui/buttons_legacy.png");
-
-    public int posOffsetX, posOffsetY;
-    public int width, height;
     public Component text;
     public boolean isDisabled;
 
     public TextButtonGadget(int posOffsetX, int posOffsetY, int width, int height, Component text) {
-        this.posOffsetX = posOffsetX;
-        this.posOffsetY = posOffsetY;
-        //this.width = Math.max(Math.min(Math.abs(width), 20), 8);
-        //this.height = Math.max(Math.min(Math.abs(height), 200), 8);
-        this.width = width;
-        this.height = height;
+        super(width, height, posOffsetX, posOffsetY);
         this.text = text;
         this.isDisabled = false;
     }
 
     @Override
-    public void render(GuiGraphics graphics, float partialTick, int mouseX, int mouseY, int parentOriginX, int parentOriginY) {
+    public void renderRelative(GuiGraphics graphics, float partialTick, int relativeMouseX, int relativeMouseY,
+                               int relativeOriginX, int relativeOriginY) {
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
 
         int textureBaseOffsetY = 20 * ((this.isDisabled ? 2 : (
-                this.isMouseOver(mouseX, mouseY, parentOriginX, parentOriginY) ? 1 : 0
+                this.isMouseOverRelative(relativeMouseX, relativeMouseY) ? 1 : 0
         )));
 
         graphics.blit(BACKGROUND_TEXTURE,
-                parentOriginX + this.posOffsetX, parentOriginY + this.posOffsetY,
+                relativeOriginX, relativeOriginY,
                 this.width - 5, this.height - 3,
                 0, textureBaseOffsetY,
                 this.width - 5, this.height - 3,
                 256, 256);
         graphics.blit(BACKGROUND_TEXTURE,
-                parentOriginX + this.posOffsetX + this.width - 5, parentOriginY + this.posOffsetY,
+                relativeOriginX + this.width - 5, relativeOriginY,
                 5, this.height - 3,
                 195, textureBaseOffsetY,
                 5, this.height - 3,
                 256, 256);
         graphics.blit(BACKGROUND_TEXTURE,
-                parentOriginX + this.posOffsetX, parentOriginY + this.posOffsetY + this.height - 3,
+                relativeOriginX, relativeOriginY + this.height - 3,
                 this.width - 5, 3,
                 0, textureBaseOffsetY + 17,
                 this.width - 5, 3,
                 256, 256);
         graphics.blit(BACKGROUND_TEXTURE,
-                parentOriginX + this.posOffsetX + this.width - 5,
-                parentOriginY + this.posOffsetY + this.height - 3,
+                relativeOriginX + this.width - 5,
+                relativeOriginY + this.height - 3,
                 5, 3,
                 195, textureBaseOffsetY + 17,
                 5, 3,
                 256, 256);
 
         ScreenUtils.drawShadedCenteredString(graphics, Minecraft.getInstance().font, this.text,
-                parentOriginX + this.posOffsetX + (this.width / 2),
-                parentOriginY + this.posOffsetY + (this.height / 2),
+                relativeOriginX + (this.width / 2),
+                relativeOriginY + (this.height / 2),
                 (this.isDisabled ? ScreenUtils.COLOR_TEXT_BUTTON_DISABLED : (
-                        this.isMouseOver(mouseX, mouseY, parentOriginX, parentOriginY) ?
+                        this.isMouseOverRelative(relativeMouseX, relativeMouseY) ?
                                 ScreenUtils.COLOR_TEXT_BUTTON_HOVER : ScreenUtils.COLOR_TEXT_BUTTON
                 ))
         );
     }
 
     @Override
-    public boolean isMouseOver(int normalizedX, int normalizedY) {
-        return normalizedX >= this.posOffsetX && normalizedX < this.posOffsetX + this.width &&
-                normalizedY >= this.posOffsetY && normalizedY < this.posOffsetY + this.height;
-    }
-
-    @Override
-    public boolean onMouseClicked(int normalizedX, int normalizedY, int mouseButton, ItemStack currentlyCarriedItemStack) {
-        if(this.isMouseOver(normalizedX, normalizedY) && !this.isDisabled) {
+    public boolean mouseClickedRelative(int relativeMouseX, int relativeMouseY, int clickButton) {
+        if(this.isMouseOverRelative(relativeMouseX, relativeMouseY) && !this.isDisabled) {
             this.playClickSound();
             return true;
         }

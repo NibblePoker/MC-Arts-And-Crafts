@@ -8,13 +8,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ItemStack;
 
-public class ArtButtonGadget implements IGadget {
+/**
+ * Simple button with an image instead of text.
+ * @version 2.0.0
+ */
+public class ArtButtonGadget extends NPGadget {
     private static final ResourceLocation BUTTONS_TEXTURE = new ResourceLocation(ArtsAndCraftsMod.MOD_ID,"textures/gui/buttons.png");
 
-    public int posOffsetX, posOffsetY;
-    public int width, height;
     private final int textureOriginX, textureOriginY;
     public boolean isDisabled;
 
@@ -23,27 +24,25 @@ public class ArtButtonGadget implements IGadget {
     }
 
     public ArtButtonGadget(int posOffsetX, int posOffsetY, int width, int height, int textureOriginX, int textureOriginY) {
-        this.posOffsetX = posOffsetX;
-        this.posOffsetY = posOffsetY;
-        this.width = width;
-        this.height = height;
+        super(width, height, posOffsetX, posOffsetY);
         this.textureOriginX = textureOriginX;
         this.textureOriginY = textureOriginY;
         this.isDisabled = false;
     }
 
     @Override
-    public void render(GuiGraphics graphics, float partialTick, int mouseX, int mouseY, int parentOriginX, int parentOriginY) {
+    public void renderRelative(GuiGraphics graphics, float partialTick, int relativeMouseX, int relativeMouseY,
+                               int relativeOriginX, int relativeOriginY) {
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
 
         int textureOffsetY = this.height * ((this.isDisabled ? 2 : (
-                this.isMouseOver(mouseX, mouseY, parentOriginX, parentOriginY) ? 1 : 0
+                this.isMouseOverRelative(relativeMouseX, relativeMouseY) ? 1 : 0
         )));
 
         graphics.blit(BUTTONS_TEXTURE,
-                parentOriginX + this.posOffsetX, parentOriginY + this.posOffsetY,
+                relativeOriginX, relativeOriginY,
                 this.width, this.height,
                 this.textureOriginX, this.textureOriginY + textureOffsetY,
                 this.width, this.height,
@@ -51,14 +50,8 @@ public class ArtButtonGadget implements IGadget {
     }
 
     @Override
-    public boolean isMouseOver(int normalizedX, int normalizedY) {
-        return normalizedX >= this.posOffsetX && normalizedX < this.posOffsetX + this.width &&
-                normalizedY >= this.posOffsetY && normalizedY < this.posOffsetY + this.height;
-    }
-
-    @Override
-    public boolean onMouseClicked(int normalizedX, int normalizedY, int mouseButton, ItemStack currentlyCarriedItemStack) {
-        if(this.isMouseOver(normalizedX, normalizedY) && !this.isDisabled) {
+    public boolean mouseClickedRelative(int relativeMouseX, int relativeMouseY, int clickButton) {
+        if(this.isMouseOverRelative(relativeMouseX, relativeMouseY) && !this.isDisabled) {
             this.playClickSound();
             return true;
         }

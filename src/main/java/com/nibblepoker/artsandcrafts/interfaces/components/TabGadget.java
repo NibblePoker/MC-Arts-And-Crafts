@@ -7,19 +7,13 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * Ree !
- * @version 2.1.0
+ * Visually pleasing blank containers in Minecraft's original style as well as in tab-ish styles.
+ * @version 3.0.0
  */
-public class TabGadget implements IGadget {
+public class TabGadget extends NPGadget {
 	private static final ResourceLocation TABS_TEXTURE = new ResourceLocation(ArtsAndCraftsMod.MOD_ID,"textures/gui/tabs.png");
 	private static final int TEXTURE_WIDTH = 384;
 	private static final int TEXTURE_HEIGHT = 384;
-
-	public int tabOffsetX, tabOffsetY;
-
-	public int tabWidth, tabHeight;
-
-	public TabOrientation tabOrientation;
 
 	public enum TabOrientation {
 		LEFT,
@@ -29,15 +23,9 @@ public class TabGadget implements IGadget {
 		NONE;
 	}
 
+	public TabOrientation tabOrientation;
+
 	public int tabColor;
-
-	public TabGadget(TabOrientation tabOrientation) {
-		this(0, 0, 0, 0, tabOrientation, 14);
-	}
-
-	public TabGadget(TabOrientation tabOrientation, int tabColor) {
-		this(0, 0, 0, 0, tabOrientation, tabColor);
-	}
 
 	public TabGadget(int width, int height, TabOrientation tabOrientation) {
 		this(0, 0, width, height, tabOrientation, 14);
@@ -46,26 +34,22 @@ public class TabGadget implements IGadget {
 	public TabGadget(int width, int height, TabOrientation tabOrientation, int tabColor) {
 		this(0, 0, width, height, tabOrientation, tabColor);
 	}
-	
+
+	public TabGadget(int offsetX, int offsetY, int width, int height, TabOrientation tabOrientation) {
+		this(offsetX, offsetY, width, height, tabOrientation, 14);
+	}
+
 	public TabGadget(int offsetX, int offsetY, int width, int height, TabOrientation tabOrientation, int tabColor) {
-		this.tabOffsetX = offsetX;
-		this.tabOffsetY = offsetY;
-		this.tabWidth = width;
-		this.tabHeight = height;
+		super(width, height, offsetX, offsetY);
 		this.tabOrientation = tabOrientation;
 		this.tabColor = tabColor % 64;
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, float partialTick, int mouseX, int mouseY, int parentOriginX, int parentOriginY) {
-		this.renderManualBackground(graphics,
-				parentOriginX + this.tabOffsetX, parentOriginY + this.tabOffsetY,
-				this.tabWidth, this.tabHeight);
-	}
-
-	public void renderManualBackground(GuiGraphics graphics, int originX, int originY, int renderWidth, int renderHeight) {
+	public void renderRelative(GuiGraphics graphics, float partialTick, int relativeMouseX, int relativeMouseY,
+							   int relativeOriginX, int relativeOriginY) {
 		// Used to hide tabs when rendering and updating the size through methods.
-		if(renderWidth == 0 || renderHeight == 0) {
+		if(this.width == 0 || this.height == 0) {
 			return;
 		}
 
@@ -81,39 +65,39 @@ public class TabGadget implements IGadget {
 
 		// Rendering the tab's background
 		graphics.blit(TABS_TEXTURE,
-				originX, originY,
+				relativeOriginX, relativeOriginY,
 				8, 8,
 				textureOriginX, textureOriginY,
 				8, 8,
 				TEXTURE_WIDTH, TEXTURE_HEIGHT);
 		graphics.blit(TABS_TEXTURE,
-				originX + 8, originY,
-				renderWidth - 16, 8,
+				relativeOriginX + 8, relativeOriginY,
+				this.width - 16, 8,
 				textureOriginX+8, textureOriginY,
 				8, 8,
 				TEXTURE_WIDTH, TEXTURE_HEIGHT);
 		graphics.blit(TABS_TEXTURE,
-				originX + renderWidth - 8, originY,
+				relativeOriginX + this.width - 8, relativeOriginY,
 				8, 8,
 				textureOriginX+((this.tabOrientation != TabOrientation.NONE) ? 16 : 40), textureOriginY,
 				8, 8,
 				TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
 		graphics.blit(TABS_TEXTURE,
-				originX, originY + 8,
-				8, renderHeight - 16,
+				relativeOriginX, relativeOriginY + 8,
+				8, this.height - 16,
 				textureOriginX, textureOriginY+8,
 				8, 8,
 				TEXTURE_WIDTH, TEXTURE_HEIGHT);
 		graphics.blit(TABS_TEXTURE,
-				originX + 8, originY + 8,
-				renderWidth - 16, renderHeight - 16,
+				relativeOriginX + 8, relativeOriginY + 8,
+				this.width - 16, this.height - 16,
 				textureOriginX+8, textureOriginY+8,
 				8, 8,
 				TEXTURE_WIDTH, TEXTURE_HEIGHT);
 		graphics.blit(TABS_TEXTURE,
-				originX + renderWidth - 8, originY + 8,
-				8, renderHeight - 16,
+				relativeOriginX + this.width - 8, relativeOriginY + 8,
+				8, this.height - 16,
 				textureOriginX+((this.tabOrientation != TabOrientation.NONE) ? 16 : 40), textureOriginY+8,
 				8, 8,
 				TEXTURE_WIDTH, TEXTURE_HEIGHT);
@@ -124,19 +108,19 @@ public class TabGadget implements IGadget {
 		}
 
 		graphics.blit(TABS_TEXTURE,
-				originX, originY + renderHeight - 8,
+				relativeOriginX, relativeOriginY + this.height - 8,
 				8, 8,
 				textureOriginX, textureOriginY+16,
 				8, 8,
 				TEXTURE_WIDTH, TEXTURE_HEIGHT);
 		graphics.blit(TABS_TEXTURE,
-				originX + 8, originY + renderHeight - 8,
-				renderWidth - 16, 8,
+				relativeOriginX + 8, relativeOriginY + this.height - 8,
+				this.width - 16, 8,
 				textureOriginX+8, textureOriginY+16,
 				8, 8,
 				TEXTURE_WIDTH, TEXTURE_HEIGHT);
 		graphics.blit(TABS_TEXTURE,
-				originX + renderWidth - 8, originY + renderHeight - 8,
+				relativeOriginX + this.width - 8, relativeOriginY + this.height - 8,
 				8, 8,
 				textureOriginX+16, textureOriginY+16,
 				8, 8,
