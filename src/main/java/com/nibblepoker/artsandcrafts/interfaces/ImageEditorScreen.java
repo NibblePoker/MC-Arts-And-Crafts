@@ -9,12 +9,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FastColor;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 public class ImageEditorScreen extends Screen {
     private final static int SCREEN_WIDTH = 240;
@@ -90,14 +87,14 @@ public class ImageEditorScreen extends Screen {
         this.colorBlindnessButton.isDisabled = true;
         // Palette "SEAFOAM PALETTE" from Jimison3 on lospec.
         // See: https://lospec.com/palette-list/seafoam
-        this.colorPaletteSlots[0].color = 0xFF37364e;
-        this.colorPaletteSlots[1].color = 0xFF355d69;
-        this.colorPaletteSlots[2].color = 0xFF6aae9d;
-        this.colorPaletteSlots[3].color = 0xFFb9d4b4;
-        this.colorPaletteSlots[4].color = 0xFFf4e9d4;
-        this.colorPaletteSlots[5].color = 0xFFd0baa9;
-        this.colorPaletteSlots[6].color = 0xFF9e8e91;
-        this.colorPaletteSlots[7].color = 0xFF5b4a68;
+        this.colorPaletteSlots[0].color = FastColor.ARGB32.color(0xFF, 0x37, 0x36, 0x4e);  //0xFF37364e;
+        this.colorPaletteSlots[1].color = FastColor.ARGB32.color(0xFF, 0x35, 0x5d, 0x69);  //0xFF355d69;
+        this.colorPaletteSlots[2].color = FastColor.ARGB32.color(0xFF, 0x6a, 0xae, 0x9d);  //0xFF6aae9d;
+        this.colorPaletteSlots[3].color = FastColor.ARGB32.color(0xFF, 0xb9, 0xd4, 0xb4);  //0xFFb9d4b4;
+        this.colorPaletteSlots[4].color = FastColor.ARGB32.color(0xFF, 0xf4, 0xe9, 0xd4);  //0xFFf4e9d4;
+        this.colorPaletteSlots[5].color = FastColor.ARGB32.color(0xFF, 0xd0, 0xba, 0xa9);  //0xFFd0baa9;
+        this.colorPaletteSlots[6].color = FastColor.ARGB32.color(0xFF, 0x9e, 0x8e, 0x91);  //0xFF9e8e91;
+        this.colorPaletteSlots[7].color = FastColor.ARGB32.color(0xFF, 0x5b, 0x4a, 0x68);  //0xFF5b4a68;
     }
 
     @Override
@@ -127,8 +124,8 @@ public class ImageEditorScreen extends Screen {
                 originX + 150, originY + 138, ScreenUtils.COLOR_WHITE);
 
         // Rendering the active colors & palette colors sections
-        this.mainColorSlot.render(graphics, partialTick, mouseX, mouseY, originX, originY);
         this.secondaryColorSlot.render(graphics, partialTick, mouseX, mouseY, originX, originY);
+        this.mainColorSlot.render(graphics, partialTick, mouseX, mouseY, originX, originY);
         for(ColorSlotGadget colorPaletteSlot : this.colorPaletteSlots) {
             colorPaletteSlot.render(graphics, partialTick, mouseX, mouseY, originX, originY);
         }
@@ -158,6 +155,9 @@ public class ImageEditorScreen extends Screen {
         this.pickerToolButton.isDisabled = this.currentTool == EEditorTool.PICKER;
         this.bucketToolButton.isDisabled = this.currentTool == EEditorTool.BUCKET;
 
+        // Updating the canvas's internal image if needed
+        this.editorCanvas.tick();
+
         super.tick();
     }
 
@@ -166,6 +166,7 @@ public class ImageEditorScreen extends Screen {
         int originX = (this.width - SCREEN_WIDTH) / 2;
         int originY = (this.height - SCREEN_HEIGHT) / 2;
 
+        // All generic buttons
         if(this.goBackButton.onMouseClicked(clickX, clickY, originX, originY, clickButton, null)) {
             Minecraft.getInstance().setScreen(new DesignerTabScreen());
         } else if(this.pencilToolButton.onMouseClicked(clickX, clickY, originX, originY, clickButton, null)) {
@@ -178,6 +179,7 @@ public class ImageEditorScreen extends Screen {
             this.currentTool = EEditorTool.BUCKET;
         }
 
+        // Interactions with color palette
         if(clickButton == 0 || clickButton == 1) {
             ColorSlotGadget clickedColorSlot = null;
 
@@ -204,6 +206,50 @@ public class ImageEditorScreen extends Screen {
             }
         }
 
+        // Interactions with canvas
+        if(this.editorCanvas.isModifiable && this.editorCanvas.isMouseOver((int) clickX, (int) clickY, originX, originY)) {
+            if(this.currentTool != EEditorTool.NONE) {
+                if(this.handleCanvasDrawingAction((int) clickX, (int) clickY, originX, originY, clickButton)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean mouseDragged(double newPosX, double newPosY, int clickButton, double deltaX, double deltaY) {
+        int originX = (this.width - SCREEN_WIDTH) / 2;
+        int originY = (this.height - SCREEN_HEIGHT) / 2;
+
+        if(this.editorCanvas.isModifiable && this.editorCanvas.isMouseOver((int) newPosX, (int) newPosY, originX, originY)) {
+            if(this.currentTool != EEditorTool.BUCKET && this.currentTool != EEditorTool.NONE) {
+                if(this.handleCanvasDrawingAction((int) newPosX, (int) newPosY, originX, originY, clickButton)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean handleCanvasDrawingAction(int mouseX, int mouseY, int originX, int originY, int clickButton) {
+        // We assume that the position is within the canvas
+        switch(this.currentTool) {
+            case PENCIL:
+                return this.editorCanvas.setColor(mouseX - originX, mouseY - originY,
+                        (clickButton == 0 ? this.mainColorSlot.color : this.secondaryColorSlot.color));
+            case ERASER:
+                return this.editorCanvas.setColor(mouseX - originX, mouseY - originY,
+                        FastColor.ARGB32.color(0x00, 0x00, 0x00, 0x00));
+            case PICKER:
+                (clickButton == 0 ? this.mainColorSlot : this.secondaryColorSlot).color = this.editorCanvas.getColor(
+                        mouseX - originX, mouseY - originY);
+                return true;
+        }
+
+        // We did not make modifications to the canvas.
         return false;
     }
 

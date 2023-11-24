@@ -9,11 +9,23 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ScreenUtils {
+    public static final int COLOR_TRANSPARENT = FastColor.ARGB32.color(0x00, 0x00, 0x00, 0x00);
     public static final int COLOR_TITLE = 0x3F3F3F;
     public static final int COLOR_WHITE = 0xFFFFFFFF;
     public static final int COLOR_TEXT_BUTTON = COLOR_WHITE;
     public static final int COLOR_TEXT_BUTTON_HOVER = FastColor.ARGB32.color(0xFF, 0xFF, 0xFF, 0xA0);
     public static final int COLOR_TEXT_BUTTON_DISABLED = 0xA0A0A0;
+
+    public static int swapRGB(int argbColor) {
+        // I hate both Mojang and OpenGL equally for this.
+        // Why, just why ?!?
+        return FastColor.ARGB32.color(
+                FastColor.ABGR32.alpha(argbColor),
+                FastColor.ABGR32.red(argbColor),
+                FastColor.ABGR32.green(argbColor),
+                FastColor.ABGR32.blue(argbColor)
+        );
+    }
 
     public static void drawUnshadedCenteredString(GuiGraphics graphics, Font font, Component component, int centerX, int centerY, int color) {
         drawUnshadedCenteredString(graphics, font, component.getString(), centerX, centerY, color);

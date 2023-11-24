@@ -2,12 +2,9 @@ package com.nibblepoker.artsandcrafts.interfaces.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nibblepoker.artsandcrafts.ArtsAndCraftsMod;
-import net.minecraft.client.Minecraft;
+import com.nibblepoker.artsandcrafts.utils.ScreenUtils;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.FastColor;
 
 public class ColorSlotGadget implements IGadget {
     private static final ResourceLocation COLOR_ACTIVE_TEXTURE = new ResourceLocation(
@@ -22,7 +19,7 @@ public class ColorSlotGadget implements IGadget {
     public int color;
 
     public ColorSlotGadget(int posOffsetX, int posOffsetY, EColorSlotGadgetType slotType) {
-        this(posOffsetX, posOffsetY, slotType, FastColor.ARGB32.color(0x00, 0x00, 0x00, 0x00));
+        this(posOffsetX, posOffsetY, slotType, ScreenUtils.COLOR_TRANSPARENT);
     }
 
     public ColorSlotGadget(int posOffsetX, int posOffsetY, EColorSlotGadgetType slotType, int color) {
