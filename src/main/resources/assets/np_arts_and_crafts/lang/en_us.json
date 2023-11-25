@@ -30,6 +30,15 @@
   "text.np_arts_and_crafts.designer_tab.editor.options.frame_masks": "Frame masks",
   "text.np_arts_and_crafts.designer_tab.editor.options.color_blindness": "Color blind.",
 
+  "text.np_arts_and_crafts.designer_tab.color_edit.rgb": "RGB:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.r": "R:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.g": "G:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.b": "B:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.alpha": "Opacity - Alpha:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.a": "A:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.hex": "Hex Values:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.rgba": "RGBA:",
+
   "text.np_arts_and_crafts.anomalous_trichromacy": "Anomalous Trichromacy",
   "text.np_arts_and_crafts.red_weak.name": "Red-Weak",
   "text.np_arts_and_crafts.red_weak.medical": "Protanomaly",

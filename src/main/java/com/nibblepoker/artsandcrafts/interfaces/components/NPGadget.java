@@ -41,6 +41,25 @@ public abstract class NPGadget {
         return false;
     }
 
+    public boolean mouseReleased(int parentMouseX, int parentMouseY, int clickButton) {
+        return this.mouseReleasedRelative(parentMouseX - this.offsetX, parentMouseY - this.offsetY, clickButton);
+    }
+
+    public boolean mouseReleasedRelative(int relativeMouseX, int relativeMouseY, int clickButton) {
+        // Override this if the gadget handles non-propagating clicks.
+        return false;
+    }
+
+    public boolean mouseDragged(int parentMouseX, int parentMouseY, int clickButton, double deltaX, double deltaY) {
+        return this.mouseDraggedRelative(parentMouseX - this.offsetX, parentMouseY - this.offsetY,
+                clickButton, deltaX, deltaY);
+    }
+
+    public boolean mouseDraggedRelative(int relativeMouseX, int relativeMouseY, int clickButton, double deltaX, double deltaY) {
+        // Override this if the gadget handles non-propagating dragged clicks.
+        return false;
+    }
+
     public boolean isMouseOver(int parentMouseX, int parentMouseY) {
         return this.isMouseOverRelative(parentMouseX - this.offsetX,parentMouseY - this.offsetY);
     }

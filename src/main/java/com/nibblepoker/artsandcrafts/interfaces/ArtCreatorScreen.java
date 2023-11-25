@@ -45,7 +45,8 @@ public class ArtCreatorScreen extends NPScreen {
 
     @Override
     public boolean mouseClicked(double clickX, double clickY, int clickButton) {
-        Minecraft.getInstance().setScreen(new ImageEditorScreen());
+        //Minecraft.getInstance().setScreen(new ImageEditorScreen());
+        Minecraft.getInstance().setScreen(new ColorEditorSideScreen());
         return true;
     }
 }

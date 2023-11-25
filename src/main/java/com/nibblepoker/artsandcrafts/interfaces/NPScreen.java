@@ -88,6 +88,28 @@ public abstract class NPScreen extends Screen {
     }
 
     public boolean mouseDraggedRelative(int newRelativePosX, int newRelativePosY, int clickButton, double deltaX, double deltaY) {
+        for(NPGadget gadget : this.gadgets) {
+            if(gadget.mouseDragged(newRelativePosX, newRelativePosY, clickButton, deltaX, deltaY)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mouseReleased(double clickX, double clickY, int clickButton) {
+        return this.mouseReleasedRelative(
+                (int) clickX - ((this.width - this.guiWidth) / 2),
+                (int) clickY - ((this.height - this.guiHeight) / 2),
+                clickButton);
+    }
+
+    public boolean mouseReleasedRelative(int relativeClickX, int relativeClickY, int clickButton) {
+        for(NPGadget gadget : this.gadgets) {
+            if(gadget.mouseReleased(relativeClickX, relativeClickY, clickButton)) {
+                return true;
+            }
+        }
         return false;
     }
 

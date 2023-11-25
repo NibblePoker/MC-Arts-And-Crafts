@@ -250,6 +250,7 @@ public class ImageEditorScreen extends NPScreen {
         PENCIL,
         ERASER,
         PICKER,
-        BUCKET;
+        BUCKET,
+        COLOR_EDITOR;
     }
 }
