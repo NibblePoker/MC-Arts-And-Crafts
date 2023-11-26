@@ -27,6 +27,10 @@ public class CanvasGadget extends NPGadget {
     private float opacity;
 
     public CanvasGadget(int posOffsetX, int posOffsetY, int width, int height) {
+        this(width, height, posOffsetX, posOffsetY, null);
+    }
+
+    public CanvasGadget(int posOffsetX, int posOffsetY, int width, int height, NativeImage referencedImage) {
         super(width, height, posOffsetX, posOffsetY);
         this.isModifiable = false;
 
@@ -35,13 +39,19 @@ public class CanvasGadget extends NPGadget {
         this.pixelPerAxisCount = 16;
 
         // Preparing the image data
-        this.drawingImage = new NativeImage(NativeImage.Format.RGBA,
-                this.pixelPerAxisCount, this.pixelPerAxisCount, true);
-        this.drawingImage.fillRect(0, 0, this.pixelPerAxisCount, this.pixelPerAxisCount,
-                ScreenUtils.COLOR_TRANSPARENT);
+        if(referencedImage == null) {
+            this.drawingImage = new NativeImage(NativeImage.Format.RGBA,
+                    this.pixelPerAxisCount, this.pixelPerAxisCount, true);
+            this.drawingImage.fillRect(0, 0, this.pixelPerAxisCount, this.pixelPerAxisCount,
+                    ScreenUtils.COLOR_TRANSPARENT);
+        } else {
+            this.drawingImage = referencedImage;
+        }
         this.drawingResource = Minecraft.getInstance().getTextureManager().register(
                 ArtsAndCraftsMod.MOD_ID + "/" + "tmp_editor_canvas_content", new DynamicTexture(this.drawingImage)
         );
+
+        // Preparing other variables
         this.needsRefresh = false;
         this.opacity = 1.0F;
     }
@@ -150,5 +160,9 @@ public class CanvasGadget extends NPGadget {
 
     public void setOpacity(float opacity) {
         this.opacity = Math.min(1.0F, Math.max(0.0F, opacity));
+    }
+
+    public NativeImage getImage() {
+        return this.drawingImage;
     }
 }

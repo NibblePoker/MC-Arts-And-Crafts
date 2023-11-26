@@ -24,6 +24,13 @@
   "text.np_arts_and_crafts.designer_tab.title.create": "Create new art",
   "text.np_arts_and_crafts.designer_tab.title.editor": "Image editor",
 
+  "text.np_arts_and_crafts.designer_tab.creator.format": "Format:",
+  "text.np_arts_and_crafts.designer_tab.creator.resolution": "Resolution:",
+  "text.np_arts_and_crafts.designer_tab.creator.regular_rgba": "Regular (RGBA)",
+  "text.np_arts_and_crafts.designer_tab.creator.monochrome_carving": "Monochrome (Carving)",
+  "text.np_arts_and_crafts.designer_tab.creator.16x16": "16x16",
+  "text.np_arts_and_crafts.designer_tab.creator.continue": "Continue",
+
   "text.np_arts_and_crafts.designer_tab.editor.save": "Save",
   "text.np_arts_and_crafts.designer_tab.editor.tools": "Tools:",
   "text.np_arts_and_crafts.designer_tab.editor.colors": "Colors:",

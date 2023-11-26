@@ -3,6 +3,9 @@ package com.nibblepoker.artsandcrafts.interfaces;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.nibblepoker.artsandcrafts.ArtsAndCraftsMod;
 import com.nibblepoker.artsandcrafts.interfaces.components.*;
+import com.nibblepoker.artsandcrafts.logic.data.ArtData;
+import com.nibblepoker.artsandcrafts.logic.data.EArtFormat;
+import com.nibblepoker.artsandcrafts.utils.ImageUtils;
 import com.nibblepoker.artsandcrafts.utils.ScreenUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,8 +23,6 @@ public class ImageEditorScreen extends NPScreen {
             "text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.editor.options");
 
     private final ColorEditorSideScreen colorEditorScreen;
-
-    private final TabGadget headerTabGadget, bodyTabGadget;
 
     private final ArtButtonGadget goBackButton;
     private final TextButtonGadget saveButton;
@@ -41,9 +42,22 @@ public class ImageEditorScreen extends NPScreen {
     // Other variables
     private ColorSlotGadget editedColorSlot = null;
 
+    private final ArtData editedImageReference;
+    private boolean canSaveImageAgain;
+
+    /**
+     * This constructor should only be used for debugging !
+     */
     protected ImageEditorScreen() {
+        this(new ArtData(EArtFormat.ART_FULL_1X1_RGBA));
+    }
+
+    protected ImageEditorScreen(ArtData editedImageDraft) {
         super(Component.translatable("text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.title.editor"),
                 240, 185);
+
+        this.editedImageReference = editedImageDraft;
+        this.canSaveImageAgain = true;
 
         this.colorEditorScreen = new ColorEditorSideScreen();
         this.colorEditorScreen.setGuiOffsetX(this.getGuiWidth() - 4);
@@ -51,10 +65,10 @@ public class ImageEditorScreen extends NPScreen {
         this.colorEditorScreen.setEnabled(false);
         this.addSubScreens(this.colorEditorScreen);
 
-        this.headerTabGadget = new TabGadget(
+        TabGadget headerTabGadget = new TabGadget(
                 0, 0, this.getGuiWidth(), 24,
                 TabGadget.TabOrientation.NONE, 9);
-        this.bodyTabGadget = new TabGadget(
+        TabGadget bodyTabGadget = new TabGadget(
                 4, 24, this.getGuiWidth() - 8, this.getGuiHeight() - 24,
                 TabGadget.TabOrientation.DOWN, 10);
 
@@ -63,7 +77,8 @@ public class ImageEditorScreen extends NPScreen {
         this.saveButton = new TextButtonGadget( this.getGuiWidth() - 48 - 6, 5, 48, 14,
                 Component.translatable("text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.editor.save"));
 
-        this.editorCanvas = new CanvasGadget(15, 31, 130, 130);
+        this.editorCanvas = new CanvasGadget(15, 31, 130, 130,
+                ImageUtils.bytesToNativeImage(16, 16, this.editedImageReference.getImageData()));
         this.editorCanvas.isModifiable = true;
 
         this.zoomOutButton = new ArtButtonGadget(EArtButtonType.EDITOR_MINUS, 15, 165);
@@ -110,7 +125,7 @@ public class ImageEditorScreen extends NPScreen {
         this.colorPaletteSlotGadgets[15].color = FastColor.ARGB32.color(0xFF, 0x16, 0x13, 0x23);
 
         this.addGadgets(
-                this.headerTabGadget, this.bodyTabGadget, this.goBackButton, this.editorCanvas, this.lessOpacityButton,
+                headerTabGadget, bodyTabGadget, this.goBackButton, this.editorCanvas, this.lessOpacityButton,
                 this.moreOpacityButton, this.pencilToolButton, this.eraserToolButton, this.pickerToolButton,
                 this.bucketToolButton, this.colorEditorToolButton, this.secondaryColorSlotGadget, this.mainColorSlotGadget,
                 this.zoomOutButton, this.zoomInButton, this.saveButton);
@@ -179,7 +194,13 @@ public class ImageEditorScreen extends NPScreen {
     @Override
     public boolean mouseClickedRelative(int relativeClickX, int relativeClickY, int clickButton) {
         // All generic buttons
-        if(this.goBackButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
+        if(this.saveButton.mouseClicked(relativeClickX, relativeClickY, clickButton) ||
+                this.goBackButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
+            this.saveImageAsDraft();
+            this.canSaveImageAgain = false;
+            if(this.saveButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
+                playSavedSound();
+            }
             Minecraft.getInstance().setScreen(new DesignerTabScreen());
             return true;
         } else if(this.pencilToolButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
@@ -338,6 +359,10 @@ public class ImageEditorScreen extends NPScreen {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 
+    private static void playSavedSound() {
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.PLAYER_LEVELUP, 1.0F));
+    }
+
     private enum EEditorTool {
         NONE,
         PENCIL,
@@ -345,5 +370,31 @@ public class ImageEditorScreen extends NPScreen {
         PICKER,
         BUCKET,
         COLOR_EDITOR;
+    }
+
+    @Override
+    public void onClose() {
+        // Triggered if ESC is pressed.
+        //ArtsAndCraftsMod.LOGGER.debug("Image editor's 'onClose' called !");
+        //this.saveImageAsDraft();
+        //this.canSaveImageAgain = false;
+        super.onClose();
+    }
+
+    @Override
+    public void removed() {
+        // Triggered if the active screen changes.
+        ArtsAndCraftsMod.LOGGER.trace("Image editor's 'removed' called !");
+        this.saveImageAsDraft();
+        this.canSaveImageAgain = false;
+        super.removed();
+    }
+
+    private void saveImageAsDraft() {
+        if(this.canSaveImageAgain) {
+            ArtsAndCraftsMod.LOGGER.debug("Saving editor's image as draft image !");
+            this.editedImageReference.setImageData(ImageUtils.nativeImageToBytes(
+                    this.editorCanvas.getImage()), false);
+        }
     }
 }

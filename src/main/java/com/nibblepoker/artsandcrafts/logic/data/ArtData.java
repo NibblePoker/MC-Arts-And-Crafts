@@ -19,11 +19,25 @@ public class ArtData {
 
     private final CompoundTag artNbtData;
 
+    private boolean needsSaving;
+
+    public ArtData(EArtFormat artFormat) {
+        this.artNbtData = new CompoundTag();
+        this.artNbtData.putInt("magic", ArtData.MAGIC_NUMBER);
+        this.artNbtData.putShort("version", ArtData.VERSION_NUMBER);
+        this.artNbtData.putByte("banned", (byte) 0);
+        this.artNbtData.putUUID("author", new UUID(0L, 0L));
+        this.artNbtData.putByteArray("art", new byte[artFormat.newArtDataSize]);
+        this.artNbtData.putInt("format", artFormat.getFormatCode());
+
+        this.needsSaving = false;
+    }
+
     public ArtData(CompoundTag artNbtData) throws InvalidArtDataException {
         this.artNbtData = artNbtData;
 
         // Temporary variables
-        boolean wasUpgraded = false;
+        this.needsSaving = false;
 
         // Checking the magic number
         if(!this.artNbtData.contains("magic", CompoundTag.TAG_INT)) {
@@ -47,7 +61,7 @@ public class ArtData {
                 this.artNbtData.getIntArray("author").length != 4) {
             this.artNbtData.remove("author");
             this.artNbtData.putUUID("author", new UUID(0L, 0L));
-            wasUpgraded = true;
+            this.needsSaving = true;
         }
         if(!this.artNbtData.contains("art", CompoundTag.TAG_BYTE_ARRAY)) {
             throw new InvalidArtDataException("Unable to find the 'art' byte array field !");
@@ -57,7 +71,7 @@ public class ArtData {
         }
 
         // Checking if we need to update the file itself.
-        if(wasUpgraded) {
+        if(this.needsSaving) {
             this.save();
         }
 
@@ -66,6 +80,21 @@ public class ArtData {
 
     public byte[] getImageData() {
         return this.artNbtData.getByteArray("art");
+    }
+
+    public void setImageData(byte[] newImageData) {
+        this.setImageData(newImageData, true);
+    }
+
+    public void setImageData(byte[] newImageData, boolean markForSaving) {
+        if(newImageData != null) {
+            this.artNbtData.remove("art");
+            this.artNbtData.putByteArray("art", newImageData);
+
+            if(markForSaving) {
+                this.needsSaving = true;
+            }
+        }
     }
 
     public int getImageFormat() {
