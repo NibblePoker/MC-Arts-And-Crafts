@@ -71,4 +71,8 @@ public abstract class NPGadget {
     public void tick() {
         // Override this if the gadget needs to update internal stuff outside of events.
     }
+
+    public boolean charTyped(char charTyped, int idk01) {
+        return false;
+    }
 }

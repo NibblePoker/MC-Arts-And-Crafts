@@ -51,10 +51,6 @@ public class SliderGadget extends NPGadget {
                 (this.isMouseOverRelative(relativeMouseX, relativeMouseY) ? 0 : 6);
         int tabTextureOffsetY = ((int) Math.floor((float) this.tabColor / 8.0F) * 15);
 
-        graphics.fill(relativeOriginX, relativeOriginY,
-                relativeOriginX + this.width, relativeOriginY + this.height,
-                0xFFFFFFFF);
-
         graphics.blit(SLIDER_BASE_TEXTURE,
                 relativeOriginX, relativeOriginY + 5,
                 5, 5,
@@ -109,7 +105,7 @@ public class SliderGadget extends NPGadget {
         return false;
     }
 
-    private void handleValueChange(int relativeMouseX, int relativeMouseY) {
+    public void handleValueChange(int relativeMouseX, int relativeMouseY) {
         this.setValue(relativeMouseX);
     }
 
@@ -126,7 +122,8 @@ public class SliderGadget extends NPGadget {
     }
 
     public void setMappedValue(int min, int max, int value) {
-        this.value = Math.max(min, Math.min(max, (int) (((float) max - (float) min) / ((float) value - (float) min)) * this.getMaxValue()));
+        //this.value = Math.max(min, Math.min(max, (int) (((float) max - (float) min) / ((float) value - (float) min)) * this.getMaxValue()));
+        this.value = (int) (((double) (value - min) / (max - min)) * this.getMaxValue());
     }
 
     @Override

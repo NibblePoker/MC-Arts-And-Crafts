@@ -16,19 +16,33 @@ import java.util.Arrays;
 public abstract class NPScreen extends Screen {
     private int guiWidth, guiHeight;
 
-    protected ArrayList<NPGadget> gadgets;
+    private int guiOffsetX, guiOffsetY;
+
+    private boolean isEnabled;
+
+    protected final ArrayList<NPGadget> gadgets;
+
+    protected final ArrayList<NPScreen> subScreens;
 
     protected NPScreen(Component title, int guiWidth, int guiHeight) {
         super(title);
         this.guiWidth = guiWidth;
         this.guiHeight = guiHeight;
         this.gadgets = new ArrayList<>();
+        this.subScreens = new ArrayList<>();
+        this.guiOffsetX = 0;
+        this.guiOffsetY = 0;
+        this.isEnabled = true;
     }
 
     /* New features */
 
     protected void addGadgets(NPGadget... gadgets) {
         this.gadgets.addAll(Arrays.asList(gadgets));
+    }
+
+    protected void addSubScreens(NPScreen... subScreen) {
+        this.subScreens.addAll(Arrays.asList(subScreen));
     }
 
     public void resizeGui(int guiWidth, int guiHeight) {
@@ -47,16 +61,31 @@ public abstract class NPScreen extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.render(graphics, mouseX, mouseY, partialTick, (this.width - this.guiWidth) / 2, (this.height - this.guiHeight) / 2);
+        this.render(graphics,
+                mouseX,
+                mouseY,
+                partialTick,
+                ((this.width - this.guiWidth) / 2) + this.guiOffsetX,
+                ((this.height - this.guiHeight) / 2) + this.guiOffsetY);
         super.render(graphics, mouseX, mouseY, partialTick);
     }
 
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int originX, int originY) {
-        this.renderRelative(graphics, partialTick, originX, originY, mouseX - originX, mouseY - originY);
+    /** DO NOT OVERRIDE !  WILL BE REMOVED SOON(tm) */
+    private void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, int originX, int originY) {
+        this.renderRelative(graphics, partialTick, originX, originY,
+                mouseX - originX,
+                mouseY - originY);
     }
 
     public void renderRelative(GuiGraphics graphics, float partialTick, int originX, int originY, int relativeMouseX, int relativeMouseY) {
         this.renderBackground(graphics);
+        for(NPScreen subScreen : this.subScreens) {
+            if(subScreen.isEnabled) {
+                subScreen.renderRelative(graphics, partialTick,
+                        originX + subScreen.guiOffsetX, originY + subScreen.guiOffsetY,
+                        relativeMouseX - subScreen.guiOffsetX, relativeMouseY - subScreen.guiOffsetY);
+            }
+        }
         for(NPGadget gadget : this.gadgets) {
             gadget.render(graphics, partialTick, relativeMouseX, relativeMouseY, originX, originY);
         }
@@ -64,10 +93,23 @@ public abstract class NPScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double clickX, double clickY, int clickButton) {
-        return this.mouseClickedRelative(
-                (int) clickX - ((this.width - this.guiWidth) / 2),
-                (int) clickY - ((this.height - this.guiHeight) / 2),
-                clickButton);
+        if(this.mouseClickedRelative(
+                (int) clickX - ((this.width - this.guiWidth) / 2) - this.guiOffsetX,
+                (int) clickY - ((this.height - this.guiHeight) / 2) - this.guiOffsetY,
+                clickButton)) {
+            return true;
+        }
+
+        for(NPScreen subScreen : this.subScreens) {
+            if(subScreen.mouseClickedRelative(
+                    (int) clickX - ((this.width - this.guiWidth) / 2) - (this.guiOffsetX + subScreen.guiOffsetX),
+                    (int) clickY - ((this.height - this.guiHeight) / 2) - (this.guiOffsetY + subScreen.guiOffsetY),
+                    clickButton)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean mouseClickedRelative(int relativeClickX, int relativeClickY, int clickButton) {
@@ -81,10 +123,23 @@ public abstract class NPScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double newPosX, double newPosY, int clickButton, double deltaX, double deltaY) {
-        return this.mouseDraggedRelative(
-                (int) newPosX - ((this.width - this.guiWidth) / 2),
-                (int) newPosY - ((this.height - this.guiHeight) / 2),
-                clickButton, deltaX, deltaY);
+        if(this.mouseDraggedRelative(
+                (int) newPosX - ((this.width - this.guiWidth) / 2) - this.guiOffsetX,
+                (int) newPosY - ((this.height - this.guiHeight) / 2) - this.guiOffsetY,
+                clickButton, deltaX, deltaY)) {
+            return true;
+        }
+
+        for(NPScreen subScreen : this.subScreens) {
+            if(subScreen.mouseDraggedRelative(
+                    (int) newPosX - ((this.width - this.guiWidth) / 2) - (this.guiOffsetX + subScreen.guiOffsetX),
+                    (int) newPosY - ((this.height - this.guiHeight) / 2) - (this.guiOffsetY + subScreen.guiOffsetY),
+                    clickButton, deltaX, deltaY)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean mouseDraggedRelative(int newRelativePosX, int newRelativePosY, int clickButton, double deltaX, double deltaY) {
@@ -98,16 +153,46 @@ public abstract class NPScreen extends Screen {
 
     @Override
     public boolean mouseReleased(double clickX, double clickY, int clickButton) {
-        return this.mouseReleasedRelative(
-                (int) clickX - ((this.width - this.guiWidth) / 2),
-                (int) clickY - ((this.height - this.guiHeight) / 2),
-                clickButton);
+        if(this.mouseReleasedRelative(
+                (int) clickX - ((this.width - this.guiWidth) / 2) - this.guiOffsetX,
+                (int) clickY - ((this.height - this.guiHeight) / 2) - this.guiOffsetY,
+                clickButton)) {
+            return true;
+        }
+
+        for(NPScreen subScreen : this.subScreens) {
+            if(subScreen.mouseReleasedRelative(
+                    (int) clickX - ((this.width - this.guiWidth) / 2) - (this.guiOffsetX + subScreen.guiOffsetX),
+                    (int) clickY - ((this.height - this.guiHeight) / 2) - (this.guiOffsetY + subScreen.guiOffsetY),
+                    clickButton)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean mouseReleasedRelative(int relativeClickX, int relativeClickY, int clickButton) {
         for(NPGadget gadget : this.gadgets) {
             if(gadget.mouseReleased(relativeClickX, relativeClickY, clickButton)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean charTyped(char p_94732_, int p_94733_) {
+        for(NPGadget gadget : this.gadgets) {
+            if(gadget.charTyped(p_94732_, p_94733_)) {
+                return true;
+            }
+        }
+        for(NPScreen subScreen : this.subScreens) {
+            if(subScreen.isEnabled) {
+                if(subScreen.charTyped(p_94732_, p_94733_)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -122,5 +207,29 @@ public abstract class NPScreen extends Screen {
 
     public int getGuiHeight() {
         return this.guiHeight;
+    }
+
+    public int getGuiOffsetX() {
+        return guiOffsetX;
+    }
+
+    public int getGuiOffsetY() {
+        return guiOffsetY;
+    }
+
+    public void setGuiOffsetX(int guiOffsetX) {
+        this.guiOffsetX = guiOffsetX;
+    }
+
+    public void setGuiOffsetY(int guiOffsetY) {
+        this.guiOffsetY = guiOffsetY;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
     }
 }

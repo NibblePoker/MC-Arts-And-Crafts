@@ -10,6 +10,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FastColor;
+import org.checkerframework.checker.units.qual.A;
 
 public class ImageEditorScreen extends NPScreen {
     private final static Component textTools = Component.translatable(
@@ -18,6 +19,8 @@ public class ImageEditorScreen extends NPScreen {
             "text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.editor.colors");
     private final static Component textOptions = Component.translatable(
             "text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.editor.options");
+
+    private final ColorEditorSideScreen colorEditorScreen;
 
     private final TabGadget headerTabGadget, bodyTabGadget;
 
@@ -28,7 +31,7 @@ public class ImageEditorScreen extends NPScreen {
     private final ArtButtonGadget zoomOutButton, zoomInButton;
     private final ArtButtonGadget lessOpacityButton, moreOpacityButton;
 
-    private final ArtButtonGadget pencilToolButton, eraserToolButton, pickerToolButton, bucketToolButton;
+    private final ArtButtonGadget pencilToolButton, eraserToolButton, pickerToolButton, bucketToolButton, colorEditorToolButton;
 
     private final TextButtonGadget frameMasksButton, colorBlindnessButton;
 
@@ -40,6 +43,12 @@ public class ImageEditorScreen extends NPScreen {
     protected ImageEditorScreen() {
         super(Component.translatable("text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.title.editor"),
                 240, 192);
+
+        this.colorEditorScreen = new ColorEditorSideScreen();
+        this.colorEditorScreen.setGuiOffsetX(this.getGuiWidth() - 4);
+        this.colorEditorScreen.setGuiOffsetY(32);
+        this.colorEditorScreen.setEnabled(false);
+        this.addSubScreens(this.colorEditorScreen);
 
         this.headerTabGadget = new TabGadget(
                 0, 0, this.getGuiWidth(), 24,
@@ -58,10 +67,11 @@ public class ImageEditorScreen extends NPScreen {
         this.lessOpacityButton = new ArtButtonGadget(EArtButtonType.EDITOR_OPACITY_MINUS, 45, 165);
         this.moreOpacityButton = new ArtButtonGadget(EArtButtonType.EDITOR_OPACITY_PLUS, 60, 165);
 
-        this.pencilToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_PENCIL, 155, 40);
-        this.eraserToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_ERASER, 173, 40);
-        this.pickerToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_PICKER, 191, 40);
-        this.bucketToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_BUCKET, 209, 40);
+        this.pencilToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_PENCIL, 151, 40);
+        this.eraserToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_ERASER, 167, 40);
+        this.pickerToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_PICKER, 183, 40);
+        this.bucketToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_BUCKET, 199, 40);
+        this.colorEditorToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_COLOR_FULL, 215, 40);
 
         this.frameMasksButton = new TextButtonGadget(152, 150, 75, 16,
                 Component.translatable("text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.editor.options.frame_masks"));
@@ -99,19 +109,19 @@ public class ImageEditorScreen extends NPScreen {
         this.addGadgets(
                 this.headerTabGadget, this.bodyTabGadget, this.goBackButton, this.editorCanvas, this.zoomOutButton,
                 this.zoomInButton, this.lessOpacityButton, this.moreOpacityButton, this.pencilToolButton,
-                this.eraserToolButton, this.pickerToolButton, this.bucketToolButton, this.frameMasksButton,
-                this.colorBlindnessButton, this.mainColorSlotGadget, this.secondaryColorSlotGadget
+                this.eraserToolButton, this.pickerToolButton, this.bucketToolButton, this.colorEditorToolButton,
+                this.frameMasksButton, this.colorBlindnessButton, this.mainColorSlotGadget, this.secondaryColorSlotGadget
         );
         this.addGadgets(this.colorPaletteSlotGadgets);
     }
 
     @Override
     public void renderRelative(GuiGraphics graphics, float partialTick, int originX, int originY, int relativeMouseX, int relativeMouseY) {
-        // Rendering background & gadgets
+        // Rendering background, gadgets & sub-screens
         super.renderRelative(graphics, partialTick, originX, originY, relativeMouseX, relativeMouseY);
 
         // Rendering text
-        ScreenUtils.drawUnshadedCenteredString(graphics, Minecraft.getInstance().font, this.title,
+        ScreenUtils.drawShadedCenteredString(graphics, Minecraft.getInstance().font, this.title,
                 originX + (this.getGuiWidth() / 2), originY + 12, ScreenUtils.COLOR_WHITE);
         graphics.drawString(Minecraft.getInstance().font, textTools,
                 originX + 150, originY + 29, ScreenUtils.COLOR_WHITE);
@@ -128,9 +138,20 @@ public class ImageEditorScreen extends NPScreen {
         this.eraserToolButton.isDisabled = this.currentTool == EEditorTool.ERASER;
         this.pickerToolButton.isDisabled = this.currentTool == EEditorTool.PICKER;
         this.bucketToolButton.isDisabled = this.currentTool == EEditorTool.BUCKET;
+        this.colorEditorToolButton.isDisabled = this.currentTool == EEditorTool.COLOR_EDITOR;
 
         // Updating the canvas's internal image if needed
         this.editorCanvas.tick();
+
+        // Updating the color editor
+        this.colorEditorScreen.setEnabled(this.currentTool == EEditorTool.COLOR_EDITOR);
+
+        // Updating the root screen's offset
+        if(this.colorEditorScreen.isEnabled()) {
+            this.setGuiOffsetX(((this.colorEditorScreen.getGuiWidth() / 2) - 4) * -1);
+        } else {
+            this.setGuiOffsetX(0);
+        }
 
         super.tick();
     }
@@ -148,6 +169,8 @@ public class ImageEditorScreen extends NPScreen {
             this.currentTool = EEditorTool.PICKER;
         } else if(this.bucketToolButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
             this.currentTool = EEditorTool.BUCKET;
+        } else if(this.colorEditorToolButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
+            this.currentTool = EEditorTool.COLOR_EDITOR;
         }
 
         // Interactions with color palette
@@ -179,13 +202,13 @@ public class ImageEditorScreen extends NPScreen {
 
         // Interactions with canvas
         if(this.editorCanvas.isModifiable && this.editorCanvas.isMouseOver(relativeClickX, relativeClickY)) {
-            if(this.currentTool != EEditorTool.NONE) {
+            if(this.currentTool != EEditorTool.NONE && this.currentTool != EEditorTool.COLOR_EDITOR) {
                 if(this.handleCanvasDrawingAction(relativeClickX, relativeClickY, clickButton)) {
                     return true;
                 }
             }
         }
-
+        
         return false;
     }
 

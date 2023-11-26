@@ -15,6 +15,8 @@ public class ScreenUtils {
     public static final int COLOR_TEXT_BUTTON = COLOR_WHITE;
     public static final int COLOR_TEXT_BUTTON_HOVER = FastColor.ARGB32.color(0xFF, 0xFF, 0xFF, 0xA0);
     public static final int COLOR_TEXT_BUTTON_DISABLED = 0xA0A0A0;
+    public static final int COLOR_TEXT_INPUT = FastColor.ARGB32.color(0xFF, 0x3F, 0x3F, 0x3F);
+    public static final int COLOR_TEXT_INPUT_DARK = FastColor.ARGB32.color(0xFF, 0x17, 0x17, 0x17);
 
     public static int swapRGB(int argbColor) {
         // I hate both Mojang and OpenGL equally for this.

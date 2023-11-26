@@ -17,7 +17,9 @@ public enum EArtButtonType {
     EDITOR_TOOL_PENCIL(14, 15, 14, 128),
     EDITOR_TOOL_ERASER(14, 15, 0, 128),
     EDITOR_TOOL_PICKER(14, 15, 28, 128),
-    EDITOR_TOOL_BUCKET(14, 15, 56, 128);
+    EDITOR_TOOL_BUCKET(14, 15, 42, 128),
+    EDITOR_TOOL_COLOR_EMPTY(14, 15, 56, 128),
+    EDITOR_TOOL_COLOR_FULL(14, 15, 70, 128);
 
     public final int width;
     public final int height;
