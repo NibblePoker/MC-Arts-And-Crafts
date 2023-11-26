@@ -19,7 +19,9 @@ public enum EArtButtonType {
     EDITOR_TOOL_PICKER(14, 15, 28, 128),
     EDITOR_TOOL_BUCKET(14, 15, 42, 128),
     EDITOR_TOOL_COLOR_EMPTY(14, 15, 56, 128),
-    EDITOR_TOOL_COLOR_FULL(14, 15, 70, 128);
+    EDITOR_TOOL_COLOR_FULL(14, 15, 70, 128),
+    RED_CROSS_MARK(12, 12, 32, 0),
+    GREEN_TICK_MARK(12, 12, 32, 26);
 
     public final int width;
     public final int height;
