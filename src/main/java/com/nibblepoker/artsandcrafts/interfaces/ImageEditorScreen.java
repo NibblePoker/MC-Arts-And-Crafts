@@ -8,11 +8,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FastColor;
-import org.checkerframework.checker.units.qual.A;
 
 public class ImageEditorScreen extends NPScreen {
+    private static final ResourceLocation COLOR_POINTERS_TEXTURE = new ResourceLocation(
+            ArtsAndCraftsMod.MOD_ID,"textures/gui/color_pointer.png");
+
     private final static Component textTools = Component.translatable(
             "text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.editor.tools");
     private final static Component textColors = Component.translatable(
@@ -28,7 +31,7 @@ public class ImageEditorScreen extends NPScreen {
 
     private final CanvasGadget editorCanvas;
 
-    private final ArtButtonGadget zoomOutButton, zoomInButton;
+    //private final ArtButtonGadget zoomOutButton, zoomInButton;
     private final ArtButtonGadget lessOpacityButton, moreOpacityButton;
 
     private final ArtButtonGadget pencilToolButton, eraserToolButton, pickerToolButton, bucketToolButton, colorEditorToolButton;
@@ -39,6 +42,9 @@ public class ImageEditorScreen extends NPScreen {
 
     private final ColorSlotGadget mainColorSlotGadget, secondaryColorSlotGadget;
     private final ColorSlotGadget[] colorPaletteSlotGadgets = new ColorSlotGadget[10];
+
+    // Other variables
+    private ColorSlotGadget editedColorSlot = null;
 
     protected ImageEditorScreen() {
         super(Component.translatable("text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.title.editor"),
@@ -62,10 +68,10 @@ public class ImageEditorScreen extends NPScreen {
         this.editorCanvas = new CanvasGadget(15, 31, 130, 130);
         this.editorCanvas.isModifiable = true;
 
-        this.zoomOutButton = new ArtButtonGadget(EArtButtonType.EDITOR_MINUS, 15, 165);
-        this.zoomInButton = new ArtButtonGadget(EArtButtonType.EDITOR_PLUS, 30, 165);
-        this.lessOpacityButton = new ArtButtonGadget(EArtButtonType.EDITOR_OPACITY_MINUS, 45, 165);
-        this.moreOpacityButton = new ArtButtonGadget(EArtButtonType.EDITOR_OPACITY_PLUS, 60, 165);
+        //this.zoomOutButton = new ArtButtonGadget(EArtButtonType.EDITOR_MINUS, 15, 165);
+        //this.zoomInButton = new ArtButtonGadget(EArtButtonType.EDITOR_PLUS, 30, 165);
+        this.lessOpacityButton = new ArtButtonGadget(EArtButtonType.EDITOR_OPACITY_MINUS, 91, 165);
+        this.moreOpacityButton = new ArtButtonGadget(EArtButtonType.EDITOR_OPACITY_PLUS, 133, 165);
 
         this.pencilToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_PENCIL, 151, 40);
         this.eraserToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_ERASER, 167, 40);
@@ -89,10 +95,8 @@ public class ImageEditorScreen extends NPScreen {
         }
 
         // Temporary changes for video demo
-        this.zoomOutButton.isDisabled = true;
-        this.zoomInButton.isDisabled = true;
-        this.lessOpacityButton.isDisabled = true;
-        this.moreOpacityButton.isDisabled = true;
+        //this.zoomOutButton.isDisabled = true;
+        //this.zoomInButton.isDisabled = true;
         this.frameMasksButton.isDisabled = true;
         this.colorBlindnessButton.isDisabled = true;
         // Palette "SEAFOAM PALETTE" from Jimison3 on lospec.
@@ -107,11 +111,10 @@ public class ImageEditorScreen extends NPScreen {
         this.colorPaletteSlotGadgets[7].color = FastColor.ARGB32.color(0xFF, 0x5b, 0x4a, 0x68);
 
         this.addGadgets(
-                this.headerTabGadget, this.bodyTabGadget, this.goBackButton, this.editorCanvas, this.zoomOutButton,
-                this.zoomInButton, this.lessOpacityButton, this.moreOpacityButton, this.pencilToolButton,
-                this.eraserToolButton, this.pickerToolButton, this.bucketToolButton, this.colorEditorToolButton,
-                this.frameMasksButton, this.colorBlindnessButton, this.mainColorSlotGadget, this.secondaryColorSlotGadget
-        );
+                this.headerTabGadget, this.bodyTabGadget, this.goBackButton, this.editorCanvas, this.lessOpacityButton,
+                this.moreOpacityButton, this.pencilToolButton, this.eraserToolButton, this.pickerToolButton,
+                this.bucketToolButton, this.colorEditorToolButton, this.frameMasksButton, this.colorBlindnessButton,
+                this.secondaryColorSlotGadget, this.mainColorSlotGadget);
         this.addGadgets(this.colorPaletteSlotGadgets);
     }
 
@@ -129,6 +132,10 @@ public class ImageEditorScreen extends NPScreen {
                 originX + 150, originY + 60, ScreenUtils.COLOR_WHITE);
         graphics.drawString(Minecraft.getInstance().font, textOptions,
                 originX + 150, originY + 138, ScreenUtils.COLOR_WHITE);
+
+        ScreenUtils.drawShadedCenteredString(graphics, Minecraft.getInstance().font,
+                (int)(this.editorCanvas.getOpacity() * 100) + "%",
+                originX + 118, originY + 172, ScreenUtils.COLOR_WHITE);
     }
 
     @Override
@@ -140,11 +147,23 @@ public class ImageEditorScreen extends NPScreen {
         this.bucketToolButton.isDisabled = this.currentTool == EEditorTool.BUCKET;
         this.colorEditorToolButton.isDisabled = this.currentTool == EEditorTool.COLOR_EDITOR;
 
-        // Updating the canvas's internal image if needed
+        // Updating the canvas's internal image if needed & other related stuff
         this.editorCanvas.tick();
+        this.lessOpacityButton.isDisabled = this.editorCanvas.getOpacity() <= 0.5F;
+        this.moreOpacityButton.isDisabled = this.editorCanvas.getOpacity() == 1.0F;
 
         // Updating the color editor
         this.colorEditorScreen.setEnabled(this.currentTool == EEditorTool.COLOR_EDITOR);
+        if(this.currentTool != EEditorTool.COLOR_EDITOR && this.editedColorSlot != null) {
+            this.editedColorSlot.drawTarget = false;
+            this.editedColorSlot = null;
+        }
+        if(this.currentTool == EEditorTool.COLOR_EDITOR && this.editedColorSlot != null) {
+            this.editedColorSlot.color = FastColor.ARGB32.color(
+                    this.colorEditorScreen.getA(), this.colorEditorScreen.getR(),
+                    this.colorEditorScreen.getG(), this.colorEditorScreen.getB()
+            );
+        }
 
         // Updating the root screen's offset
         if(this.colorEditorScreen.isEnabled()) {
@@ -161,16 +180,29 @@ public class ImageEditorScreen extends NPScreen {
         // All generic buttons
         if(this.goBackButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
             Minecraft.getInstance().setScreen(new DesignerTabScreen());
+            return true;
         } else if(this.pencilToolButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
             this.currentTool = EEditorTool.PENCIL;
+            return true;
         } else if(this.eraserToolButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
             this.currentTool = EEditorTool.ERASER;
+            return true;
         } else if(this.pickerToolButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
             this.currentTool = EEditorTool.PICKER;
+            return true;
         } else if(this.bucketToolButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
             this.currentTool = EEditorTool.BUCKET;
+            return true;
         } else if(this.colorEditorToolButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
             this.currentTool = EEditorTool.COLOR_EDITOR;
+            this.editedColorSlot = this.mainColorSlotGadget;
+            return true;
+        } else if(this.lessOpacityButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
+            this.editorCanvas.setOpacity(this.editorCanvas.getOpacity() - 0.25F);
+            return true;
+        } else if(this.moreOpacityButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
+            this.editorCanvas.setOpacity(this.editorCanvas.getOpacity() + 0.25F);
+            return true;
         }
 
         // Interactions with color palette
@@ -184,7 +216,8 @@ public class ImageEditorScreen extends NPScreen {
                 }
             }
 
-            if(clickedColorSlot != null && this.currentTool != EEditorTool.BUCKET && this.currentTool != EEditorTool.NONE) {
+            if(clickedColorSlot != null && this.currentTool != EEditorTool.BUCKET && this.currentTool != EEditorTool.NONE &&
+                    this.currentTool != EEditorTool.COLOR_EDITOR) {
                 playColorSlotSound();
                 switch(this.currentTool) {
                     case PENCIL:
@@ -200,6 +233,37 @@ public class ImageEditorScreen extends NPScreen {
             }
         }
 
+        // Interactions that edit and select the colors
+        if(this.currentTool == EEditorTool.COLOR_EDITOR && (clickButton == 0 || clickButton == 1)) {
+            ColorSlotGadget selectedColorSlot = null;
+
+            if(this.mainColorSlotGadget.isMouseOver(relativeClickX, relativeClickY)) {
+                selectedColorSlot = this.mainColorSlotGadget;
+            } else if(this.secondaryColorSlotGadget.isMouseOver(relativeClickX, relativeClickY)) {
+                selectedColorSlot = this.secondaryColorSlotGadget;
+            } else {
+                for(ColorSlotGadget colorSlotGadget : this.colorPaletteSlotGadgets) {
+                    if(colorSlotGadget.isMouseOver(relativeClickX, relativeClickY)) {
+                        selectedColorSlot = colorSlotGadget;
+                        break;
+                    }
+                }
+            }
+
+            if(selectedColorSlot != null) {
+                playColorSlotSound();
+                if(this.editedColorSlot != null) {
+                    this.editedColorSlot.drawTarget = false;
+                }
+                selectedColorSlot.drawTarget = true;
+                this.editedColorSlot = selectedColorSlot;
+                this.colorEditorScreen.handleColorEditorValueChange(
+                        this.editedColorSlot.getR(), this.editedColorSlot.getG(),
+                        this.editedColorSlot.getB(), this.editedColorSlot.getA(),
+                        true, true);
+            }
+        }
+
         // Interactions with canvas
         if(this.editorCanvas.isModifiable && this.editorCanvas.isMouseOver(relativeClickX, relativeClickY)) {
             if(this.currentTool != EEditorTool.NONE && this.currentTool != EEditorTool.COLOR_EDITOR) {
@@ -208,7 +272,7 @@ public class ImageEditorScreen extends NPScreen {
                 }
             }
         }
-        
+
         return false;
     }
 

@@ -12,6 +12,50 @@
   "item.np_arts_and_crafts.potato_starch": "Bouteille d'amidon de pomme de terre",
   "item.np_arts_and_crafts.potato_glue": "Bouteille de colle de pomme de terre",
 
+  "item.np_arts_and_crafts.designer_blueprint": "designer_blueprint",
+  "item.np_arts_and_crafts.designer_tab": "designer_tab",
+
   "sounds.np_arts_and_crafts.neon_tube_break": "Neon Tube Breaking",
-  "sounds.np_arts_and_crafts.glue_slurp": "Glue Slurp"
+  "sounds.np_arts_and_crafts.glue_slurp": "Glue Slurp",
+
+  "creative_tab.np_arts_and_crafts.main_tab": "???",
+
+  "text.np_arts_and_crafts.designer_tab.title.main": "Designer's Tab",
+  "text.np_arts_and_crafts.designer_tab.title.create": "Create new art",
+  "text.np_arts_and_crafts.designer_tab.title.editor": "Image editor",
+
+  "text.np_arts_and_crafts.designer_tab.editor.tools": "Outils:",
+  "text.np_arts_and_crafts.designer_tab.editor.colors": "Couleurs:",
+  "text.np_arts_and_crafts.designer_tab.editor.options": "Options:",
+  "text.np_arts_and_crafts.designer_tab.editor.options.frame_masks": "Masques",
+  "text.np_arts_and_crafts.designer_tab.editor.options.color_blindness": "Daltonisme",
+
+  "text.np_arts_and_crafts.designer_tab.color_edit.rgb": "RGB - Rouge/Vert/Bleu:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.r": "R:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.g": "G:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.b": "B:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.alpha": "Opacité - Alpha:",
+  "text.np_arts_and_crafts.designer_tab.color_edit.a": "A:",
+
+  "text.np_arts_and_crafts.anomalous_trichromacy": "Anomalous Trichromacy",
+  "text.np_arts_and_crafts.red_weak.name": "Red-Weak",
+  "text.np_arts_and_crafts.red_weak.medical": "Protanomalie",
+  "text.np_arts_and_crafts.green_weak.name": "Green-Weak",
+  "text.np_arts_and_crafts.green_weak.medical": "Deutéranomalie",
+  "text.np_arts_and_crafts.blue_weak.name": "Blue-Weak",
+  "text.np_arts_and_crafts.blue_weak.medical": "Tritanomalie",
+
+  "text.np_arts_and_crafts.dichromatic_view": "Dichromatic View",
+  "text.np_arts_and_crafts.red_blind.name": "Red-Blind",
+  "text.np_arts_and_crafts.red_blind.medical": "Protanopie",
+  "text.np_arts_and_crafts.green_blind.name": "Green-Blind",
+  "text.np_arts_and_crafts.green_blind.medical": "Deutéranopie",
+  "text.np_arts_and_crafts.blue_blind.name": "Blue-Blind",
+  "text.np_arts_and_crafts.blue_blind.medical": "Tritanopie",
+
+  "text.np_arts_and_crafts.monochromatic_view": "Vue monochromatique",
+  "text.np_arts_and_crafts.monochrome.name": "Monochromatie",
+  "text.np_arts_and_crafts.monochrome.medical": "Achromatopsie",
+  "text.np_arts_and_crafts.blue_monochrome.name": "Monochromatie du cône bleu",
+  "text.np_arts_and_crafts.blue_monochrome.medical": "BCM"
 }

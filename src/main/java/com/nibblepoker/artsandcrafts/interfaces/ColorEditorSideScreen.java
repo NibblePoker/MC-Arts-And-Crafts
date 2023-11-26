@@ -260,4 +260,20 @@ public class ColorEditorSideScreen extends NPScreen {
 
         return true;
     }
+
+    public int getR() {
+        return this.colorR;
+    }
+
+    public int getG() {
+        return this.colorG;
+    }
+
+    public int getB() {
+        return this.colorB;
+    }
+
+    public int getA() {
+        return this.colorA;
+    }
 }

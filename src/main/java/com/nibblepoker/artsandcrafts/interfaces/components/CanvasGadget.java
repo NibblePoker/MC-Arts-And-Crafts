@@ -16,6 +16,7 @@ public class CanvasGadget extends NPGadget {
     
     public boolean isModifiable;
 
+    // Temp variables
     private int pixelSize;
     private int pixelPerAxisCount;
 
@@ -23,6 +24,7 @@ public class CanvasGadget extends NPGadget {
     private final NativeImage drawingImage;
     private ResourceLocation drawingResource;
     private boolean needsRefresh;
+    private float opacity;
 
     public CanvasGadget(int posOffsetX, int posOffsetY, int width, int height) {
         super(width, height, posOffsetX, posOffsetY);
@@ -41,6 +43,7 @@ public class CanvasGadget extends NPGadget {
                 ArtsAndCraftsMod.MOD_ID + "/" + "tmp_editor_canvas_content", new DynamicTexture(this.drawingImage)
         );
         this.needsRefresh = false;
+        this.opacity = 1.0F;
     }
 
     @Override
@@ -59,6 +62,7 @@ public class CanvasGadget extends NPGadget {
                 130, 130);
 
         // Rendering the actual image
+        graphics.setColor(1.0F, 1.0F, 1.0F, this.opacity);
         graphics.blit(this.drawingResource,
                 relativeOriginX + 1, relativeOriginY + 1,
                 128, 128,
@@ -67,10 +71,12 @@ public class CanvasGadget extends NPGadget {
                 this.pixelPerAxisCount, this.pixelPerAxisCount);
 
         // Pixel target.
+        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         if(this.isModifiable && this.isMouseOverRelative(relativeMouseX, relativeMouseY)) {
             int pixelX = Math.max(0, (relativeMouseX - 1) / this.pixelSize);
             int pixelY = Math.max(0, (relativeMouseY - 1) / this.pixelSize);
 
+            //renderOutline
             graphics.fill(
                     relativeOriginX + 1 + (pixelX * this.pixelSize),
                     relativeOriginY + 1 + (pixelY * this.pixelSize),
@@ -135,5 +141,14 @@ public class CanvasGadget extends NPGadget {
         }
 
         return ScreenUtils.COLOR_TRANSPARENT;
+    }
+
+    // Getters & setters
+    public float getOpacity() {
+        return opacity;
+    }
+
+    public void setOpacity(float opacity) {
+        this.opacity = Math.min(1.0F, Math.max(0.0F, opacity));
     }
 }
