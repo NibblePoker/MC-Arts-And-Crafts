@@ -11,8 +11,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
 public class CanvasGadget extends NPGadget {
-    private static final ResourceLocation CANVAS_TEXTURE = new ResourceLocation(
-            ArtsAndCraftsMod.MOD_ID,"textures/gui/canvas_editor.png");
+    private static final ResourceLocation CANVAS_BACKGROUND_TEXTURE = new ResourceLocation(
+            ArtsAndCraftsMod.MOD_ID,"textures/gui/canvas_background.png");
+    private static final ResourceLocation CANVAS_BORDER_TEXTURE = new ResourceLocation(
+            ArtsAndCraftsMod.MOD_ID,"textures/gui/canvas_border.png");
     
     public boolean isModifiable;
 
@@ -35,8 +37,9 @@ public class CanvasGadget extends NPGadget {
         this.isModifiable = false;
 
         // Temporary values, will be improved once zoom and pan is implemented.
-        this.pixelSize = 8;
         this.pixelPerAxisCount = 16;
+        // Must not be zero !
+        this.pixelSize = Math.max(1, this.width / this.pixelPerAxisCount);
 
         // Preparing the image data
         if(referencedImage == null) {
@@ -64,37 +67,149 @@ public class CanvasGadget extends NPGadget {
         RenderSystem.enableDepthTest();
 
         // Background
-        graphics.blit(CANVAS_TEXTURE,
+        graphics.blit(CANVAS_BACKGROUND_TEXTURE,
                 relativeOriginX, relativeOriginY,
-                130, 130,
+                this.width, this.height,
                 0, 0,
-                130, 130,
-                130, 130);
+                this.pixelPerAxisCount, this.pixelPerAxisCount,
+                64, 64);
 
-        // Rendering the actual image
+        // Rendering the image
         graphics.setColor(1.0F, 1.0F, 1.0F, this.opacity);
         graphics.blit(this.drawingResource,
-                relativeOriginX + 1, relativeOriginY + 1,
-                128, 128,
+                relativeOriginX, relativeOriginY,
+                this.width, this.height,
                 0, 0,
                 this.pixelPerAxisCount, this.pixelPerAxisCount,
                 this.pixelPerAxisCount, this.pixelPerAxisCount);
 
-        // Pixel target.
+        // Rendering the pixel highlighter.
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         if(this.isModifiable && this.isMouseOverRelative(relativeMouseX, relativeMouseY)) {
-            int pixelX = Math.max(0, (relativeMouseX - 1) / this.pixelSize);
-            int pixelY = Math.max(0, (relativeMouseY - 1) / this.pixelSize);
+            int pixelX = Math.max(0, relativeMouseX / this.pixelSize);
+            int pixelY = Math.max(0, relativeMouseY / this.pixelSize);
 
             //renderOutline
             graphics.fill(
-                    relativeOriginX + 1 + (pixelX * this.pixelSize),
-                    relativeOriginY + 1 + (pixelY * this.pixelSize),
-                    relativeOriginX + 1 + ((pixelX + 1) * this.pixelSize),
-                    relativeOriginY + 1 + ((pixelY + 1) * this.pixelSize),
+                    relativeOriginX + (pixelX * this.pixelSize),
+                    relativeOriginY + (pixelY * this.pixelSize),
+                    relativeOriginX + ((pixelX + 1) * this.pixelSize),
+                    relativeOriginY + ((pixelY + 1) * this.pixelSize),
                     FastColor.ARGB32.color(0xFF, 0xFF, 0x7F, 0x7F)
             );
         }
+
+        // Rendering top-left border corner
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX - 4, relativeOriginY - 4,
+                4, 4,
+                0, 0,
+                4, 4,
+                16, 16);
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX, relativeOriginY,
+                4, 4,
+                4, 4,
+                4, 4,
+                16, 16);
+
+        // Rendering top-right border corner
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX + this.width, relativeOriginY - 4,
+                4, 4,
+                12, 0,
+                4, 4,
+                16, 16);
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX + this.width - 4, relativeOriginY,
+                4, 4,
+                8, 4,
+                4, 4,
+                16, 16);
+
+        // Rendering bottom left border corner
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX - 4, relativeOriginY + this.height,
+                4, 4,
+                0, 12,
+                4, 4,
+                16, 16);
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX, relativeOriginY + this.height - 4,
+                4, 4,
+                4, 8,
+                4, 4,
+                16, 16);
+
+        // Rendering bottom right border corner
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX + this.width, relativeOriginY + this.height,
+                4, 4,
+                12, 12,
+                4, 4,
+                16, 16);
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX + this.width - 4, relativeOriginY + this.height - 4,
+                4, 4,
+                8, 8,
+                4, 4,
+                16, 16);
+
+        // Rendering top-middle border
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX, relativeOriginY - 4,
+                this.width, 4,
+                4, 0,
+                4, 4,
+                16, 16);
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX + 4, relativeOriginY,
+                this.width - 8, 4,
+                8, 0,
+                4, 4,
+                16, 16);
+
+        // Rendering bottom-middle border
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX, relativeOriginY + this.height,
+                this.width, 4,
+                4, 12,
+                4, 4,
+                16, 16);
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX + 4, relativeOriginY + this.height - 4,
+                this.width - 8, 4,
+                8, 12,
+                4, 4,
+                16, 16);
+
+        // Rendering left-middle border
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX - 4, relativeOriginY,
+                4, this.height,
+                0, 4,
+                4, 4,
+                16, 16);
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX, relativeOriginY + 4,
+                4, this.height - 8,
+                0, 8,
+                4, 4,
+                16, 16);
+
+        // Rendering right-middle border
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX + this.width, relativeOriginY,
+                4, this.height,
+                12, 4,
+                4, 4,
+                16, 16);
+        graphics.blit(CANVAS_BORDER_TEXTURE,
+                relativeOriginX + this.width - 4, relativeOriginY + 4,
+                4, this.height - 8,
+                12, 8,
+                4, 4,
+                16, 16);
     }
 
     @Override
@@ -124,8 +239,8 @@ public class CanvasGadget extends NPGadget {
             return false;
         }
 
-        int pixelX = Math.min(this.pixelPerAxisCount - 1, Math.max(0, (relativeX - 1) / this.pixelSize));
-        int pixelY = Math.min(this.pixelPerAxisCount - 1, Math.max(0, (relativeY - 1) / this.pixelSize));
+        int pixelX = Math.min(this.pixelPerAxisCount - 1, Math.max(0, relativeX / this.pixelSize));
+        int pixelY = Math.min(this.pixelPerAxisCount - 1, Math.max(0, relativeY / this.pixelSize));
         //System.out.println(pixelX + ":" + pixelY);
 
         if(this.drawingImage.getPixelRGBA(pixelX, pixelY) != newColor) {
@@ -144,8 +259,8 @@ public class CanvasGadget extends NPGadget {
 
     private int getColorRelative(int relativeX, int relativeY) {
         if(this.isMouseOverRelative(relativeX, relativeY)) {
-            int pixelX = Math.min(this.pixelPerAxisCount - 1, Math.max(0, (relativeX - 1) / this.pixelSize));
-            int pixelY = Math.min(this.pixelPerAxisCount - 1, Math.max(0, (relativeY - 1) / this.pixelSize));
+            int pixelX = Math.min(this.pixelPerAxisCount - 1, Math.max(0, relativeX / this.pixelSize));
+            int pixelY = Math.min(this.pixelPerAxisCount - 1, Math.max(0, relativeY / this.pixelSize));
             // Converting and returning the canvas' ABGR to a semi-standard ARGB.
             return ScreenUtils.swapRGB(this.drawingImage.getPixelRGBA(pixelX, pixelY));
         }

@@ -24,6 +24,15 @@
   "text.np_arts_and_crafts.designer_tab.title.create": "Create new art",
   "text.np_arts_and_crafts.designer_tab.title.editor": "Image editor",
 
+  "text.np_arts_and_crafts.designer_tab.title.preview.draft": "Draft Preview",
+  "text.np_arts_and_crafts.designer_tab.title.preview.image": "Image Preview",
+  "text.np_arts_and_crafts.designer_tab.preview.delete": "Delete",
+  "text.np_arts_and_crafts.designer_tab.preview.report": "Report",
+  "text.np_arts_and_crafts.designer_tab.preview.modify": "Modify",
+  "text.np_arts_and_crafts.designer_tab.preview.remix": "Remix",
+  "text.np_arts_and_crafts.designer_tab.preview.save": "Save",
+  "text.np_arts_and_crafts.designer_tab.preview.print": "Print",
+
   "text.np_arts_and_crafts.designer_tab.creator.format": "Format:",
   "text.np_arts_and_crafts.designer_tab.creator.resolution": "Resolution:",
   "text.np_arts_and_crafts.designer_tab.creator.regular_rgba": "Regular (RGBA)",

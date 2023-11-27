@@ -52,14 +52,15 @@ public class ImageUtils {
     public static NativeImage bytesToNativeImage(int width, int height, byte[] imageData) {
         NativeImage image = new NativeImage(NativeImage.Format.RGBA, width, height, true);
 
-        for(int i = 0; i < (width * height) / 4; i++) {
+        for(int i = 0; i < (width * height); i++) {
             // We prepare an ARGB pixel.
-            int pixelARGB = FastColor.ARGB32.color(
-                    ((int) 0) | (imageData[(i * 4) + 3]),
-                    ((int) 0) | (imageData[(i * 4)]),
-                    ((int) 0) | (imageData[(i * 4) + 1]),
-                    ((int) 0) | (imageData[(i * 4) + 2])
-            );
+            // We cannot use "FastColor.ARGB32.color" with byte values, even if typecast-ed.
+            // ♫ Oh Java, I wish you and your hellspawn primitives a long and painful stay in the deepest circles of hell ♫
+            // DO NOT CHANGE OR SIMPLIFY THIS UNLESS YOU VALIDATE ALL CHANNELS INDIVIDUALLY !
+            int pixelARGB = ((imageData[(i * 4) + 3] << 24) & 0xFF000000) |
+                    ((imageData[(i * 4)] << 16) & 0x00FF0000) |
+                    ((imageData[(i * 4) + 1] << 8) & 0x0000FF00) |
+                    ((imageData[(i * 4) + 2]) & 0x000000FF);
 
             // We now apply that pixel as an ABGR pixel.
             image.setPixelRGBA(

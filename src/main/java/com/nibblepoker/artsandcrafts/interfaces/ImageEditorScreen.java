@@ -77,7 +77,7 @@ public class ImageEditorScreen extends NPScreen {
         this.saveButton = new TextButtonGadget( this.getGuiWidth() - 48 - 6, 5, 48, 14,
                 Component.translatable("text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.editor.save"));
 
-        this.editorCanvas = new CanvasGadget(15, 31, 130, 130,
+        this.editorCanvas = new CanvasGadget(16, 32, 128, 128,
                 ImageUtils.bytesToNativeImage(16, 16, this.editedImageReference.getImageData()));
         this.editorCanvas.isModifiable = true;
 
@@ -201,7 +201,7 @@ public class ImageEditorScreen extends NPScreen {
             if(this.saveButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
                 playSavedSound();
             }
-            Minecraft.getInstance().setScreen(new DesignerTabScreen());
+            Minecraft.getInstance().setScreen(new ImagePreviewScreen(this.editedImageReference, true));
             return true;
         } else if(this.pencilToolButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
             this.currentTool = EEditorTool.PENCIL;
