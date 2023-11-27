@@ -199,6 +199,11 @@ public class ArtManager {
                         if(this.artManager.artNbtlock.tryLock(DEFAULT_LOCK_TIMEOUT_MS * 5, TimeUnit.MILLISECONDS)) {
                             // Lock gets freed in "finally" block.
                             artDataToSave.save();
+
+                            // Once saved, we add it to the index.
+                            this.artManager.artNbtlock.lock();
+                            this.artManager.artIndex.put(artDataToSave.getSha1String(), artDataToSave);
+                            this.artManager.artNbtlock.unlock();
                         } else {
                             // We couldn't get the lock, we requeue the art for saving.
                             this.artManager.unsavedArtData.add(artDataToSave);
@@ -209,7 +214,7 @@ public class ArtManager {
                         this.artManager.artNbtlock.unlock();
                     }
                 } else {
-                    // Waiting for a bit to prevent CPU hogging.
+                    // Waiting for a bit to prevent CPU & lock hogging.
                     try {
                         Thread.sleep(250);
                     } catch (InterruptedException ignored) {}
