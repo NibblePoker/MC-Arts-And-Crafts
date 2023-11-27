@@ -110,6 +110,10 @@ public class ArtData {
         }
     }
 
+    public CompoundTag getNbtCopy() {
+        return this.artNbtData.copy();
+    }
+
     public void setAuthorUUID(UUID authorUUID) {
         this.artNbtData.remove("author");
         this.artNbtData.putUUID("author", authorUUID);

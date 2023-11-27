@@ -13,16 +13,28 @@
   "item.np_arts_and_crafts.potato_glue": "Bouteille de colle de pomme de terre",
 
   "item.np_arts_and_crafts.designer_blueprint": "designer_blueprint",
-  "item.np_arts_and_crafts.designer_tab": "designer_tab",
+  "item.np_arts_and_crafts.designer_tab": "Carnet de déssinateur",
 
   "sounds.np_arts_and_crafts.neon_tube_break": "Neon Tube Breaking",
-  "sounds.np_arts_and_crafts.glue_slurp": "Glue Slurp",
+  "sounds.np_arts_and_crafts.glue_slurp": "Schlouppage de cole",
 
   "creative_tab.np_arts_and_crafts.main_tab": "???",
 
-  "text.np_arts_and_crafts.designer_tab.title.main": "Designer's Tab",
-  "text.np_arts_and_crafts.designer_tab.title.create": "Create new art",
-  "text.np_arts_and_crafts.designer_tab.title.editor": "Image editor",
+  "text.np_arts_and_crafts.designer_tab.title.main": "Carnet de déssinateur",
+  "text.np_arts_and_crafts.designer_tab.title.create": "Création d'image",
+  "text.np_arts_and_crafts.designer_tab.title.editor": "Éditeur d'image",
+
+  "text.np_arts_and_crafts.designer_tab.title.preview.draft": "Aperçu du brouillon",
+  "text.np_arts_and_crafts.designer_tab.title.preview.image": "Aperçu d'image",
+  "text.np_arts_and_crafts.designer_tab.preview.delete": "Supprimer",
+  "text.np_arts_and_crafts.designer_tab.preview.report": "Signaler",
+  "text.np_arts_and_crafts.designer_tab.preview.modify": "Modifier",
+  "text.np_arts_and_crafts.designer_tab.preview.remix": "Remixer",
+  "text.np_arts_and_crafts.designer_tab.preview.save": "Sauvegarder",
+  "text.np_arts_and_crafts.designer_tab.preview.print": "Publier",
+  "text.np_arts_and_crafts.designer_tab.preview.duplicate": "Dupliquer",
+  "text.np_arts_and_crafts.designer_tab.preview.format": "Format:",
+  "text.np_arts_and_crafts.designer_tab.preview.author": "Auteur:",
 
   "text.np_arts_and_crafts.designer_tab.creator.format": "Format:",
   "text.np_arts_and_crafts.designer_tab.creator.resolution": "Résolution:",

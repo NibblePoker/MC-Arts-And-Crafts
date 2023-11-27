@@ -1,6 +1,11 @@
 package com.nibblepoker.artsandcrafts.interfaces.components;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class NPGadget {
     protected int width, height;
@@ -10,11 +15,20 @@ public abstract class NPGadget {
      */
     protected int offsetX, offsetY;
 
+    protected ArrayList<Component> tooltipText;
+
     public NPGadget(int width, int height, int offsetX, int offsetY) {
         this.width = width;
         this.height = height;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
+    }
+
+    public void addTooltipComponents(Component... components) {
+        if(this.tooltipText == null) {
+            this.tooltipText = new ArrayList<>();
+        }
+        this.tooltipText.addAll(Arrays.asList(components));
     }
 
     public void render(GuiGraphics graphics, float partialTick, int parentMouseX, int parentMouseY, int parentOriginX, int parentOriginY) {
@@ -25,7 +39,13 @@ public abstract class NPGadget {
 
     public void renderRelative(GuiGraphics graphics, float partialTick, int relativeMouseX, int relativeMouseY,
                                int relativeOriginX, int relativeOriginY) {
-        // Override this if needed.
+        // Don't forget to call 'super.renderRelative' to get tooltips if you override this function.
+        if(this.tooltipText != null) {
+            if(!this.tooltipText.isEmpty() && this.isMouseOverRelative(relativeMouseX, relativeMouseY)) {
+                graphics.renderComponentTooltip(Minecraft.getInstance().font, this.tooltipText,
+                        relativeOriginX, relativeOriginY);
+            }
+        }
     }
 
     public void onParentGuiResize(int oldGuiWidth, int oldGuiHeight, int newGuiWidth, int newGuiHeight) {

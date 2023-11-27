@@ -90,6 +90,8 @@ public class ImageEditorScreen extends NPScreen {
         this.moreOpacityButton = new ArtButtonGadget(EArtButtonType.EDITOR_OPACITY_PLUS, 133, 165);
 
         this.pencilToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_PENCIL, 151, 40);
+        //pencilToolButton.addTooltipComponents(Component.literal("Test123"));
+
         this.eraserToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_ERASER, 167, 40);
         this.pickerToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_PICKER, 183, 40);
         this.bucketToolButton = new ArtButtonGadget(EArtButtonType.EDITOR_TOOL_BUCKET, 199, 40);
@@ -200,8 +202,10 @@ public class ImageEditorScreen extends NPScreen {
             this.canSaveImageAgain = false;
             if(this.saveButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
                 playSavedSound();
+                Minecraft.getInstance().setScreen(new ImagePreviewScreen(this.editedImageReference, true));
+            } else {
+                Minecraft.getInstance().setScreen(new DesignerTabScreen());
             }
-            Minecraft.getInstance().setScreen(new ImagePreviewScreen(this.editedImageReference, true));
             return true;
         } else if(this.pencilToolButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
             this.currentTool = EEditorTool.PENCIL;

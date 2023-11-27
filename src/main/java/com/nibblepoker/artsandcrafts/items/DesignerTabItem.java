@@ -21,17 +21,18 @@ public class DesignerTabItem extends Item {
         super(properties);
     }
 
-    public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player user, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
         // Playing a "page-flipping" sound.
-        user.playSound(SoundEvents.VILLAGER_WORK_LIBRARIAN, 0.8F, 0.8F + user.level().getRandom().nextFloat() * 0.4F);
+        player.playSound(SoundEvents.VILLAGER_WORK_LIBRARIAN, 0.8F, 0.8F + player.level().getRandom().nextFloat() * 0.4F);
+        player.getItemInHand(hand).setPopTime(5);
 
-        // TODO: Showing the client-side GUI for ???
+        // Showing the client-side GUI for editing & managing images.
         if(world.isClientSide()) {
             ArtsAndCraftsMod.LOGGER.debug("Showing Designer Tab's Screen...");
             Minecraft.getInstance().setScreen(new DesignerTabScreen());
         }
 
-        return InteractionResultHolder.fail(user.getItemInHand(hand));
+        return InteractionResultHolder.fail(player.getItemInHand(hand));
     }
 
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {

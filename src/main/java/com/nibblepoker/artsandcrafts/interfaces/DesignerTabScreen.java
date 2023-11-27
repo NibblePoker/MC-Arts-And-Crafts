@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class DesignerTabScreen extends NPScreen {
     private final TabGadget headerTabGadget, bodyTabGadget;
-    private final ArtButtonGadget goBackButton;
+    //private final ArtButtonGadget goBackButton;
     private final ArtButtonGadget testButton;
 
     public DesignerTabScreen() {
@@ -23,19 +23,19 @@ public class DesignerTabScreen extends NPScreen {
 
         this.headerTabGadget = new TabGadget(
                 0, 0, this.getGuiWidth(), 24,
-                TabGadget.TabOrientation.NONE);
+                TabGadget.TabOrientation.NONE, 39);
         this.bodyTabGadget = new TabGadget(
                 4, 24, this.getGuiWidth() - 8, this.getGuiHeight() - 24,
-                TabGadget.TabOrientation.DOWN, 15);
+                TabGadget.TabOrientation.DOWN, 38);
 
         // We don't want to render them through the normal pipeline.
-        this.goBackButton = new ArtButtonGadget(EArtButtonType.LEFT_MEDIUM, 5, 5);
-        this.goBackButton.isDisabled = true;
+        //this.goBackButton = new ArtButtonGadget(EArtButtonType.LEFT_MEDIUM, 5, 5);
+        //this.goBackButton.isDisabled = true;
 
         this.testButton = new ArtButtonGadget(EArtButtonType.RIGHT_LARGE, 50, 50);
 
         // Registering the gadgets.
-        this.addGadgets(this.headerTabGadget, this.bodyTabGadget, this.goBackButton, this.testButton);
+        this.addGadgets(this.headerTabGadget, this.bodyTabGadget, this.testButton);
     }
 
     @Override

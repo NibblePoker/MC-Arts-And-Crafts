@@ -2,9 +2,11 @@ package com.nibblepoker.artsandcrafts.logic.managers;
 
 import com.mojang.logging.LogUtils;
 import com.nibblepoker.artsandcrafts.ArtsAndCraftsMod;
+import com.nibblepoker.artsandcrafts.exceptions.InvalidArtDataException;
 import com.nibblepoker.artsandcrafts.logic.data.ArtData;
 import com.nibblepoker.artsandcrafts.logic.data.EArtFormat;
 
+import net.minecraft.nbt.CompoundTag;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -98,6 +100,47 @@ public class ArtManager {
 
         // In the event we couldn't get the image data, we return null.
         return null;
+    }
+
+    /**
+     * Retrieves the requested ArtData and returns a 1-to-1 copy of it for non-concurrent operations.
+     * Mainly used to show images in the GUI since it's not realistically feasible to block the
+     * sub-thread all the time.
+     */
+    public ArtData getArtDataCopy(String imageHash) {
+        if(!isSHA1Hash(imageHash)) {
+            return null;
+        }
+
+        ArtData desiredArt = this.artIndex.get(imageHash);
+
+        // If we have the data, we attempt to acquire the lock and make a copy of it.
+        if(desiredArt != null) {
+            try {
+                if(this.artNbtlock.tryLock(DEFAULT_LOCK_TIMEOUT_MS, TimeUnit.MILLISECONDS)) {
+                    // We have the lock and can finally make a copy.
+                    return new ArtData(desiredArt.getNbtCopy());
+                    // Lock gets freed in "finally" block.
+                }
+            } catch (InterruptedException ignored) {
+                // We don't really care about lock failures TBH.
+            } catch (InvalidArtDataException e) {
+                ArtsAndCraftsMod.LOGGER.error(e.toString());
+                return null;
+            } finally {
+                this.artNbtlock.unlock();
+            }
+
+            // In the event we couldn't get the lock, we indicate that it's loading and should be retried later.
+            return null;
+        }
+
+        // We don't have that image cached.
+        return null;
+    }
+
+    public boolean hasImage(String imageHash) {
+        return this.artIndex.containsKey(imageHash);
     }
 
     public EArtFormat getImageFormat(String imageHash) {
@@ -194,5 +237,19 @@ public class ArtManager {
             this.logger.info("Loaded '" + artLoadCount + "' piece(s) of art !");
             this.logger.info("Cached '" + this.artManager.artIndex.size() + "' unique piece(s) of art !");
         }
+    }
+
+    /**
+     * DO NOT USE THIS !!!
+     */
+    public void doDebugPrintout() {
+        System.out.println("List of known art keys:");
+        for(String artKey : this.artIndex.keySet()) {
+            System.out.println("> " + artKey);
+        }
+    }
+
+    public static boolean isSHA1Hash(String input) {
+        return input != null && input.matches("[0-9a-fA-F]{40}");
     }
 }

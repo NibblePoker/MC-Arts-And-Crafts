@@ -47,6 +47,8 @@ public class ArtButtonGadget extends NPGadget {
                 this.textureOriginX, this.textureOriginY + textureOffsetY,
                 this.width, this.height,
                 256, 256);
+
+        super.renderRelative(graphics, partialTick, relativeMouseX, relativeMouseY, relativeOriginX, relativeOriginY);
     }
 
     @Override

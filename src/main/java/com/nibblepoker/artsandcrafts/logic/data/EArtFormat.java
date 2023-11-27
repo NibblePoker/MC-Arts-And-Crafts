@@ -1,6 +1,7 @@
 package com.nibblepoker.artsandcrafts.logic.data;
 
 public enum EArtFormat {
+    // Management formats (0x00000000 - 0x000000FF)
     UNKNOWN_FORMAT(0x00000000, EArtResolution.FULL_1X1, EArtColorDepth.RGBA, 16*16*4),
     UNKNOWN_UNCACHED(0x00000000, EArtResolution.FULL_1X1, EArtColorDepth.RGBA, 16*16*4),
     ERROR(0x00000001, EArtResolution.FULL_1X1, EArtColorDepth.RGBA, 16*16*4),
@@ -33,6 +34,14 @@ public enum EArtFormat {
             }
         }
         return EArtFormat.UNKNOWN_FORMAT;
+    }
+
+    public boolean isManagementFormat() {
+        //return this.formatCode <= 0x000000FF; // FIXME: doesn't work, IDK why, it just doesn't...
+        return this.formatCode == UNKNOWN_FORMAT.formatCode ||
+                this.formatCode == UNKNOWN_UNCACHED.formatCode ||
+                this.formatCode == ERROR.formatCode ||
+                this.formatCode == LOADING.formatCode;
     }
 
     public enum EArtResolution {

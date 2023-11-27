@@ -130,7 +130,7 @@ public class ArtsAndCraftsMod {
             "designer_tab", () -> new DesignerTabItem(new Item.Properties().stacksTo(1))
     );
     public static final RegistryObject<Item> DESIGNER_BLUEPRINT_ITEM = ITEMS.register(
-            "designer_blueprint", () -> new DesignerTabItem(new Item.Properties().stacksTo(1))
+            "designer_blueprint", () -> new DesignerBlueprintItem(new Item.Properties().stacksTo(1))
     );
 
     // Sounds

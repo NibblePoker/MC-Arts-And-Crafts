@@ -4,7 +4,6 @@ import com.nibblepoker.artsandcrafts.ArtsAndCraftsMod;
 import com.nibblepoker.artsandcrafts.interfaces.components.*;
 import com.nibblepoker.artsandcrafts.logic.data.ArtData;
 import com.nibblepoker.artsandcrafts.logic.data.StaticData;
-import com.nibblepoker.artsandcrafts.logic.managers.ArtManager;
 import com.nibblepoker.artsandcrafts.utils.ImageUtils;
 import com.nibblepoker.artsandcrafts.utils.ScreenUtils;
 import net.minecraft.client.Minecraft;
@@ -33,14 +32,20 @@ public class ImagePreviewScreen extends NPScreen {
     private final TextInputGadget formatTextBoxGadget, authorNameTextBoxGadget;
 
     private final boolean isDraft;
+    private final boolean isBlueprint;
 
-    protected ImagePreviewScreen(ArtData shownImageReference, boolean isDraft) {
+    public ImagePreviewScreen(ArtData shownImageReference, boolean isDraft) {
+        this(shownImageReference, isDraft, false);
+    }
+
+    public ImagePreviewScreen(ArtData shownImageReference, boolean isDraft, boolean isBlueprint) {
         super(Component.translatable("text." + ArtsAndCraftsMod.MOD_ID +
                         ".designer_tab.title.preview." + (isDraft ? "draft" : "image")),
                 284, 150);
 
         this.shownImageReference = shownImageReference;
         this.isDraft = isDraft;
+        this.isBlueprint = isBlueprint;
 
         TabGadget headerTabGadget = new TabGadget(
                 0, 0, this.getGuiWidth() - 76, 24,
@@ -74,7 +79,8 @@ public class ImagePreviewScreen extends NPScreen {
         this.saveButton = new TextButtonGadget(206, 96, 73, 17,
                 Component.translatable("text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.preview.save"));
         this.printButton = new TextButtonGadget(206, 96, 73, 17,
-                Component.translatable("text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.preview.print"));
+                Component.translatable("text." + ArtsAndCraftsMod.MOD_ID + ".designer_tab.preview." + (
+                        this.isBlueprint ? "duplicate" : "print")));
 
         this.previewCanvasGadget = new CanvasGadget(16, 32, 64, 64,
                 ImageUtils.bytesToNativeImage(16, 16, this.shownImageReference.getImageData()));
@@ -90,8 +96,12 @@ public class ImagePreviewScreen extends NPScreen {
 
         // Adding common gadgets
         this.addGadgets(headerTabGadget, bodyTabGadget, sideTab1Gadget, sideTab2Gadget, sideTab3Gadget,
-                this.previewCanvasGadget, this.goBackButton, this.formatTextBoxGadget, this.formatTextBoxGadget,
+                this.previewCanvasGadget, this.formatTextBoxGadget, this.formatTextBoxGadget,
                 this.authorNameTextBoxGadget);
+
+        if(!this.isBlueprint) {
+            this.addGadgets(this.goBackButton);
+        }
 
         // Adding mode-dependant gadgets
         if(isDraft) {
@@ -119,7 +129,7 @@ public class ImagePreviewScreen extends NPScreen {
     @Override
     public boolean mouseClickedRelative(int relativeClickX, int relativeClickY, int clickButton) {
         // Handling common actions
-        if(this.goBackButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
+        if(!this.isBlueprint && this.goBackButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
             Minecraft.getInstance().setScreen(new DesignerTabScreen());
         }
 
