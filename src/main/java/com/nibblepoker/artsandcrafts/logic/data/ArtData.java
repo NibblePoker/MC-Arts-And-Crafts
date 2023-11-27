@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -118,6 +119,7 @@ public class ArtData {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-1");
             digest.reset();
+            digest.update(ByteBuffer.allocate(4).putInt(this.artNbtData.getInt("format")).array());
             digest.update(this.artNbtData.getByteArray("art"));
             return digest.digest();
         } catch(NoSuchAlgorithmException ignored) {
