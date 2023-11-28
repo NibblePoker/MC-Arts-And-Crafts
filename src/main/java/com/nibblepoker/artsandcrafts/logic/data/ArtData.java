@@ -110,6 +110,10 @@ public class ArtData {
         }
     }
 
+    public CompoundTag getNbt() {
+        return this.artNbtData;
+    }
+
     public CompoundTag getNbtCopy() {
         return this.artNbtData.copy();
     }

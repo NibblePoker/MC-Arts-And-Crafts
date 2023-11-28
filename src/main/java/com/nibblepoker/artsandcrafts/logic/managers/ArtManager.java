@@ -246,7 +246,9 @@ public class ArtManager {
 
     /**
      * DO NOT USE THIS !!!
+     * It is not thread-safe and is likely to cause a 'ConcurrentModificationException' !
      */
+    @Deprecated
     public void doDebugPrintout() {
         System.out.println("List of known art keys:");
         for(String artKey : this.artIndex.keySet()) {

@@ -77,5 +77,12 @@
   "text.np_arts_and_crafts.monochrome.name": "Monochromatie",
   "text.np_arts_and_crafts.monochrome.medical": "Achromatopsie",
   "text.np_arts_and_crafts.blue_monochrome.name": "Monochromatie du cône bleu",
-  "text.np_arts_and_crafts.blue_monochrome.medical": "BCM"
+  "text.np_arts_and_crafts.blue_monochrome.medical": "BCM",
+
+  "text.np_arts_and_crafts.packet.server_received_invalid_art": "Le serveur n'as pas réussi à lire l'image envoyée",
+  "text.np_arts_and_crafts.packet.server_has_duplicate": "Le serveur possède déjà une copie de l'image envoyée",
+  "text.np_arts_and_crafts.packet.server_processing_art": "Le serveur a reçu l'image envoyée",
+
+  "text.np_arts_and_crafts.packet.server_unknown_art_report": "Le serveur n'as pas de copie de l'image signalée",
+  "text.np_arts_and_crafts.packet.server_reported_art": "Le serveur a bien reçu votre signalement"
 }

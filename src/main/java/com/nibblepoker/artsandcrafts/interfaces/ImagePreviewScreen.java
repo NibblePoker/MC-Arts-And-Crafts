@@ -4,6 +4,9 @@ import com.nibblepoker.artsandcrafts.ArtsAndCraftsMod;
 import com.nibblepoker.artsandcrafts.interfaces.components.*;
 import com.nibblepoker.artsandcrafts.logic.data.ArtData;
 import com.nibblepoker.artsandcrafts.logic.data.StaticData;
+import com.nibblepoker.artsandcrafts.networking.ModMessages;
+import com.nibblepoker.artsandcrafts.networking.packets.ImageReportC2SPacket;
+import com.nibblepoker.artsandcrafts.networking.packets.ImageUploadC2SPacket;
 import com.nibblepoker.artsandcrafts.utils.ImageUtils;
 import com.nibblepoker.artsandcrafts.utils.ScreenUtils;
 import net.minecraft.client.Minecraft;
@@ -158,7 +161,8 @@ public class ImagePreviewScreen extends NPScreen {
             }
         } else {
             if(this.reportButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
-                // TODO: Report image
+                ModMessages.sendToServer(new ImageReportC2SPacket(this.shownImageReference.getSha1String(),
+                        true, true));
             } else if(this.remixButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {
                 // TODO: Make copy as draft & goto editor
             } else if(this.printButton.mouseClicked(relativeClickX, relativeClickY, clickButton)) {

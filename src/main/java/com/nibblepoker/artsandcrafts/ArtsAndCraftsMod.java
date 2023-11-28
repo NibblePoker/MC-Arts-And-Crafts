@@ -6,6 +6,7 @@ import com.nibblepoker.artsandcrafts.blocks.entities.DevTestOneBlockEntity;
 import com.nibblepoker.artsandcrafts.blocks.renderers.DevTestOneBlockRenderer;
 import com.nibblepoker.artsandcrafts.items.*;
 import com.nibblepoker.artsandcrafts.logic.managers.ArtManager;
+import com.nibblepoker.artsandcrafts.networking.ModMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -222,7 +223,7 @@ public class ArtsAndCraftsMod {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         // Registering the network messages that can be sent back and forth.
-        //event.enqueueWork(MessageIndex::register);
+        event.enqueueWork(ModMessages::register);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
