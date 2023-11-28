@@ -96,6 +96,8 @@ TODO
 #### Image Creator
 TODO
 
+<img src="images/interfaces/image_creator_v0_2x.png"/>
+
 #### Image Editor
 The image editor allows you to create and modify images easily in-game and provides tou with these tools:<br>
 &nbsp;● Pencil & Eraser<br>
@@ -104,7 +106,7 @@ The image editor allows you to create and modify images easily in-game and provi
 &nbsp;● Color Editor<br>
 &nbsp;● Color Blindness Filters **(TODO)**
 
-<img src="images/demo_ui_v2_2x.png"/>
+<img src="images/interfaces/demo_ui_v2_2x.png"/>
 
 ## Source code
 
